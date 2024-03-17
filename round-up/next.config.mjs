@@ -1,6 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
 };
+
+// const redirects = async () => {
+//   return [
+//     {
+//       source: "/login",
+//       destination: "/",
+//       permanent: true,
+//     },
+//   ];
+// };
 
 export default nextConfig;
