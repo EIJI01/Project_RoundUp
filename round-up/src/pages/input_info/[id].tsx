@@ -115,9 +115,28 @@ export default function InputInfo() {
             label="faculty"
             onChange={handleChange}
           >
-            <MenuItem value={"Faculty 1"}>Faculty 1</MenuItem>
-            <MenuItem value={"Faculty 2"}>Faculty 2</MenuItem>
-            <MenuItem value={"Faculty 3"}>Faculty 3</MenuItem>
+            <MenuItem value={"AG"}>คณะเกษตรศาสตร์</MenuItem>
+            <MenuItem value={"TE"}>คณะเทคโนโลยี</MenuItem>
+            <MenuItem value={"EN"}>คณะวิศวกรรมศาสตร์</MenuItem>
+            <MenuItem value={"SC"}>คณะวิทยาศาสตร์</MenuItem>
+            <MenuItem value={"ARCH"}>คณะสถาปัตยกรรมศาสตร์</MenuItem>
+            <MenuItem value={"CP"}>วิทยาลัยการคอมพิวเตอร์</MenuItem>
+            <MenuItem value={"NU"}>คณะพยาบาลศาสตร์</MenuItem>
+            <MenuItem value={"MED"}>คณะแพทยศาสตร์</MenuItem>
+            <MenuItem value={"AMS"}>คณะเทคนิคการแพทย์</MenuItem>
+            <MenuItem value={"PH"}>คณะสาธารณสุขศาสตร์</MenuItem>
+            <MenuItem value={"DENT"}>คณะทันตแพทยศาสตร์</MenuItem>
+            <MenuItem value={"PS"}>คณะเภสัชศาสตร์</MenuItem>
+            <MenuItem value={"VM"}>คณะสัตวแพทยศาสตร์</MenuItem>
+            <MenuItem value={"ED"}>คณะศึกษาศาสตร์</MenuItem>
+            <MenuItem value={"HUSO"}>คณะมนุษยศาสตร์และสังคมศาสตร์</MenuItem>
+            <MenuItem value={"KKBS"}>คณะบริหารธุรกิจและการบัญชี</MenuItem>
+            <MenuItem value={"FA"}>คณะศิลปกรรมศาสตร์</MenuItem>
+            <MenuItem value={"ECON"}>คณะเศรษฐศาสตร์</MenuItem>
+            <MenuItem value={"LW"}>คณะนิติศาสตร์</MenuItem>
+            <MenuItem value={"COLA"}>วิทยาลัยการปกครองท้องถิ่น</MenuItem>
+            <MenuItem value={"KKUIC"}>วิทยาลัยนานาชาติ</MenuItem>
+            <MenuItem value={"IS"}>วิทยาเขตหนองคาย</MenuItem>
           </Select>
         </FormControl>
 

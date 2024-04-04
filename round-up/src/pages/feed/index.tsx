@@ -66,9 +66,26 @@ const RoundUpFeed = () => {
           marginBottom: "52px",
         }}
       >
-        <Box sx={{ fontSize: "32px", fontWeight: "bold" }}>RoundUp</Box>
+        <Typography sx={{ fontSize: "32px", fontWeight: "bold" }}>
+          PhakPhoom
+        </Typography>
         <Box sx={{ minWidth: 120 }}>
-          <FormControl fullWidth size="small">
+          <FormControl fullWidth size="medium">
+            <InputLabel id="demo-simple-select-label">Filter</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={age}
+              label="Age"
+              onChange={handleChange}
+            >
+              <MenuItem value={10}>Ten</MenuItem>
+              <MenuItem value={20}>Twenty</MenuItem>
+              <MenuItem value={30}>Thirty</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth size="medium">
             <InputLabel id="demo-simple-select-label">Filter</InputLabel>
             <Select
               labelId="demo-simple-select-label"
@@ -98,7 +115,12 @@ const RoundUpFeed = () => {
               }}
               onClick={() => (window.location.href = `feed/${data.id}`)}
             >
-              <CardMedia component="img" height="300" image={data.image} alt="Paella dish" />
+              <CardMedia
+                component="img"
+                height="300"
+                image={data.image}
+                alt="Paella dish"
+              />
               <CardContent>
                 <Typography variant="body2" color="text.secondary">
                   {data.title}
