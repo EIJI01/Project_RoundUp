@@ -26,7 +26,7 @@ export default function InputInfo() {
   const [firstName, setFirstName] = useState<string | null>(null);
   const [lastName, setLastName] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
-  const [faculty, setFaculty] = useState<string>("Faculty 1");
+  const [faculty, setFaculty] = useState<string | null>(null);
   const [studentId, setStudentId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -69,6 +69,7 @@ export default function InputInfo() {
         alt={filterData ? filterData.ImageName : ""}
         width={400}
         height={500}
+        layout="responsive"
         style={{ borderRadius: "10px" }}
       />
 
@@ -88,7 +89,7 @@ export default function InputInfo() {
           label="ชื่อ"
           variant="outlined"
           fullWidth
-          value={firstName}
+          value={firstName ? firstName : ""}
         />
 
         <TextField
@@ -96,7 +97,7 @@ export default function InputInfo() {
           label="นามสกุล"
           variant="outlined"
           fullWidth
-          value={lastName}
+          value={lastName ? lastName : ""}
         />
 
         <TextField
@@ -104,7 +105,7 @@ export default function InputInfo() {
           label="เบอร์โทร"
           variant="outlined"
           fullWidth
-          value={phoneNumber}
+          value={phoneNumber ? phoneNumber : ""}
         />
 
         <FormControl fullWidth>
@@ -112,33 +113,10 @@ export default function InputInfo() {
           <Select
             labelId="facultySelect"
             id="facultySelect"
-            value={faculty}
+            value={faculty !== null ? faculty : "ไม่ระบุ"}
             label="faculty"
             onChange={handleChange}
           >
-            {/* <MenuItem value={"AG"}>คณะเกษตรศาสตร์</MenuItem>
-            <MenuItem value={"TE"}>คณะเทคโนโลยี</MenuItem>
-            <MenuItem value={"EN"}>คณะวิศวกรรมศาสตร์</MenuItem>
-            <MenuItem value={"SC"}>คณะวิทยาศาสตร์</MenuItem>
-            <MenuItem value={"ARCH"}>คณะสถาปัตยกรรมศาสตร์</MenuItem>
-            <MenuItem value={"CP"}>วิทยาลัยการคอมพิวเตอร์</MenuItem>
-            <MenuItem value={"NU"}>คณะพยาบาลศาสตร์</MenuItem>
-            <MenuItem value={"MED"}>คณะแพทยศาสตร์</MenuItem>
-            <MenuItem value={"AMS"}>คณะเทคนิคการแพทย์</MenuItem>
-            <MenuItem value={"PH"}>คณะสาธารณสุขศาสตร์</MenuItem>
-            <MenuItem value={"DENT"}>คณะทันตแพทยศาสตร์</MenuItem>
-            <MenuItem value={"PS"}>คณะเภสัชศาสตร์</MenuItem>
-            <MenuItem value={"VM"}>คณะสัตวแพทยศาสตร์</MenuItem>
-            <MenuItem value={"ED"}>คณะศึกษาศาสตร์</MenuItem>
-            <MenuItem value={"HUSO"}>คณะมนุษยศาสตร์และสังคมศาสตร์</MenuItem>
-            <MenuItem value={"KKBS"}>คณะบริหารธุรกิจและการบัญชี</MenuItem>
-            <MenuItem value={"FA"}>คณะศิลปกรรมศาสตร์</MenuItem>
-            <MenuItem value={"ECON"}>คณะเศรษฐศาสตร์</MenuItem>
-            <MenuItem value={"LW"}>คณะนิติศาสตร์</MenuItem>
-            <MenuItem value={"COLA"}>วิทยาลัยการปกครองท้องถิ่น</MenuItem>
-            <MenuItem value={"KKUIC"}>วิทยาลัยนานาชาติ</MenuItem>
-            <MenuItem value={"IS"}>วิทยาเขตหนองคาย</MenuItem> */}
-
             {FACULTY.map((faculty, index) => {
               return (
                 <MenuItem key={index} value={faculty.value}>
@@ -146,6 +124,7 @@ export default function InputInfo() {
                 </MenuItem>
               );
             })}
+            <MenuItem value={"ไม่ระบุ"}>ไม่ระบุ</MenuItem>
           </Select>
         </FormControl>
 
@@ -154,7 +133,7 @@ export default function InputInfo() {
           label="รหัสนักศึกษา"
           variant="outlined"
           fullWidth
-          value={studentId}
+          value={studentId ? studentId : ""}
         />
 
         <Button variant="contained" onClick={handleSubmit}>

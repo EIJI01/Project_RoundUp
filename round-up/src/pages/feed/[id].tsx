@@ -14,20 +14,26 @@ export default function EventId() {
   }, [router.query.id]);
 
   return (
-    <Box sx={{ height: "100vh", padding: "32px" }}>
+    <Box sx={{ height: "100vh", padding: "24px" }}>
       {filterData && (
-        <Box sx={{ display: "flex", justifyContent: "center", marginTop: "32px" }}>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Box>
             <Image
               src={filterData?.image as string}
               alt={filterData.ImageName}
               width={400}
-              height={300}
+              height={500}
+              layout="responsive"
+              style={{ borderRadius: "10px" }}
             />
-            <Box sx={{ fontSize: "18px", fontWeight: "bold", marginTop: "16px" }}>
+            <Box
+              sx={{ fontSize: "18px", fontWeight: "bold", marginTop: "16px" }}
+            >
               {filterData.title}
             </Box>
-            <Box sx={{ fontSize: "16px", marginTop: "16px" }}>{filterData.detail}</Box>
+            <Box sx={{ fontSize: "16px", marginTop: "16px" }}>
+              {filterData.detail}
+            </Box>
           </Box>
         </Box>
       )}
