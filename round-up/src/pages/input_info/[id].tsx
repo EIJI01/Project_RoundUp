@@ -7,6 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { FACULTY } from "@/data/faculty";
 
 interface InfoModel {
   firstName: string | null;
@@ -115,7 +116,7 @@ export default function InputInfo() {
             label="faculty"
             onChange={handleChange}
           >
-            <MenuItem value={"AG"}>คณะเกษตรศาสตร์</MenuItem>
+            {/* <MenuItem value={"AG"}>คณะเกษตรศาสตร์</MenuItem>
             <MenuItem value={"TE"}>คณะเทคโนโลยี</MenuItem>
             <MenuItem value={"EN"}>คณะวิศวกรรมศาสตร์</MenuItem>
             <MenuItem value={"SC"}>คณะวิทยาศาสตร์</MenuItem>
@@ -136,7 +137,15 @@ export default function InputInfo() {
             <MenuItem value={"LW"}>คณะนิติศาสตร์</MenuItem>
             <MenuItem value={"COLA"}>วิทยาลัยการปกครองท้องถิ่น</MenuItem>
             <MenuItem value={"KKUIC"}>วิทยาลัยนานาชาติ</MenuItem>
-            <MenuItem value={"IS"}>วิทยาเขตหนองคาย</MenuItem>
+            <MenuItem value={"IS"}>วิทยาเขตหนองคาย</MenuItem> */}
+
+            {FACULTY.map((faculty, index) => {
+              return (
+                <MenuItem key={index} value={faculty.value}>
+                  {faculty.F_NAME_TH}
+                </MenuItem>
+              );
+            })}
           </Select>
         </FormControl>
 
