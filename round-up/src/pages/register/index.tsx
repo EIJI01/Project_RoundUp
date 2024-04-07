@@ -12,9 +12,10 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Theme, useTheme } from "@mui/material/styles";
+import { FACULTY } from "@/data/faculty";
 
 const Register = () => {
-  const [faculty, setFaculty] = React.useState<string[]>([]);
+  const [faculty, setFaculty] = React.useState<string | null>(null);
 
   const theme = useTheme();
   function getStyles(name: string, personName: string[], theme: Theme) {
@@ -30,11 +31,9 @@ const Register = () => {
     const {
       target: { value },
     } = event;
-    setFaculty(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    setFaculty(value);
   };
+
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -71,31 +70,42 @@ const Register = () => {
         gap: "64px",
       }}
     >
-      <Typography sx={{ fontWeight: "bold", fontSize: "32px" }}>Register to get started</Typography>
+      <Typography sx={{ fontWeight: "bold", fontSize: "32px" }}>
+        Register to get started
+      </Typography>
       <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        <TextField label="Enter your KKU ID" variant="outlined" fullWidth />
-        <TextField label="Enter your password" variant="outlined" fullWidth />
-        <TextField label="Enter your password" variant="outlined" fullWidth />
+        <TextField label="First name" variant="outlined" fullWidth />
+        <TextField label="Last name" variant="outlined" fullWidth />
+        <TextField label="Telephone number" variant="outlined" fullWidth />
         <FormControl sx={{ width: "100%" }}>
           <InputLabel id="demo-multiple-name-label">Faculty</InputLabel>
           <Select
             labelId="demo-multiple-name-label"
             id="demo-multiple-name"
-            multiple
-            value={faculty}
+            value={faculty !== null ? faculty : "ไม่ระบุ"}
             onChange={handleChange}
             input={<OutlinedInput label="Name" />}
             MenuProps={MenuProps}
           >
-            {names.map((name) => (
-              <MenuItem key={name} value={name} style={getStyles(name, faculty, theme)}>
-                {name}
+            {FACULTY.map((faculty, index) => (
+              <MenuItem
+                key={index}
+                value={faculty.F_NAME_TH}
+                // style={getStyles(name, faculty, theme)}
+              >
+                {faculty.F_NAME_TH}
               </MenuItem>
             ))}
+            <MenuItem value={"ไม่ระบุ"}>ไม่ระบุ</MenuItem>
           </Select>
         </FormControl>
-        <TextField label="Enter your password" variant="outlined" fullWidth />
-        <TextField label="Enter your password" variant="outlined" fullWidth type="password" />
+        <TextField label="Student ID" variant="outlined" fullWidth />
+        <TextField
+          label="Password"
+          variant="outlined"
+          fullWidth
+          type="password"
+        />
       </Box>
       <Button
         variant="contained"

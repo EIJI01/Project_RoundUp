@@ -19,7 +19,7 @@ const Login = () => {
         Welcome back
       </Typography>
       <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        <TextField label="Enter your KKU ID" variant="outlined" fullWidth />
+        <TextField label="Enter your student ID" variant="outlined" fullWidth />
         <TextField
           label="Enter your password"
           variant="outlined"

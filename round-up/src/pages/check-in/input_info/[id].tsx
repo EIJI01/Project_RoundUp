@@ -119,7 +119,7 @@ export default function InputInfo() {
           >
             {FACULTY.map((faculty, index) => {
               return (
-                <MenuItem key={index} value={faculty.value}>
+                <MenuItem key={index} value={faculty.F_NAME_TH}>
                   {faculty.F_NAME_TH}
                 </MenuItem>
               );
