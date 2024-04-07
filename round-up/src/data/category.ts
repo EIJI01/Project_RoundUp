@@ -1,0 +1,18 @@
+export const CATEGORY = [
+  { CID: "1", C_NAME_TH: "กายภาพบำบัด", value: "physicalReconstruction" },
+  { CID: "2", C_NAME_TH: "การบริจาคโลหิต", value: "bloodcol" },
+  { CID: "3", C_NAME_TH: "การประกวด", value: "contest" },
+  { CID: "4", C_NAME_TH: "การศึกษา/ให้ความรู้", value: "education" },
+  { CID: "5", C_NAME_TH: "กีฬา", value: "sport" },
+  { CID: "6", C_NAME_TH: "ดนตรี", value: "music" },
+  { CID: "7", C_NAME_TH: "ตลาด", value: "market" },
+  { CID: "8", C_NAME_TH: "ทักษะชีวิต", value: "lifeskill" },
+  { CID: "9", C_NAME_TH: "นันทนาการ", value: "recreation" },
+  { CID: "10", C_NAME_TH: "ภาษา", value: "language" },
+  { CID: "11", C_NAME_TH: "วัฒนธรรม", value: "culture" },
+  { CID: "12", C_NAME_TH: "สุขภาพ", value: "healthy" },
+  { CID: "13", C_NAME_TH: "สิ่งแวดล้อม", value: "environmental" },
+  { CID: "14", C_NAME_TH: "สวนและต้นไม้", value: "garden" },
+  { CID: "15", C_NAME_TH: "หนังสือ", value: "book" },
+  { CID: "16", C_NAME_TH: "อาหาร", value: "food" },
+];

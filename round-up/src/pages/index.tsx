@@ -3,8 +3,11 @@ import { Box, Button, Typography } from "@mui/material";
 import Background from "../../public/assets/background.jpg";
 import Image from "next/image";
 import Logo from "../../public/assets/logo.jpg";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <Box
       sx={{
@@ -29,7 +32,14 @@ export default function Home() {
           justifyContent: "center",
         }}
       >
-        <Box sx={{ padding: "10%", display: "flex", flexDirection: "column", gap: "12px" }}>
+        <Box
+          sx={{
+            padding: "10%",
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+          }}
+        >
           <Box
             sx={{
               display: "flex",
@@ -43,7 +53,12 @@ export default function Home() {
             <Image
               src={Logo}
               alt="kuy"
-              style={{ height: "50px", width: "50px", borderRadius: "50%", marginBottom: "10px" }}
+              style={{
+                height: "50px",
+                width: "50px",
+                borderRadius: "50%",
+                marginBottom: "10px",
+              }}
             />
             <Typography sx={{ fontWeight: "bold" }}>KKURoundUp</Typography>
           </Box>
@@ -59,6 +74,9 @@ export default function Home() {
               textTransform: "capitalize",
               paddingY: "12px",
             }}
+            onClick={() => {
+              router.push("login");
+            }}
           >
             Login
           </Button>
@@ -72,6 +90,9 @@ export default function Home() {
               borderRadius: "4px",
               textTransform: "capitalize",
               paddingY: "12px",
+            }}
+            onClick={() => {
+              router.push("register");
             }}
           >
             Register

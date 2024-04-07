@@ -7,6 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { FACULTY } from "@/data/faculty";
 
 interface InfoModel {
   firstName: string | null;
@@ -25,7 +26,7 @@ export default function InputInfo() {
   const [firstName, setFirstName] = useState<string | null>(null);
   const [lastName, setLastName] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
-  const [faculty, setFaculty] = useState<string>("Faculty 1");
+  const [faculty, setFaculty] = useState<string | null>(null);
   const [studentId, setStudentId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -68,6 +69,7 @@ export default function InputInfo() {
         alt={filterData ? filterData.ImageName : ""}
         width={400}
         height={500}
+        layout="responsive"
         style={{ borderRadius: "10px" }}
       />
 
@@ -87,7 +89,7 @@ export default function InputInfo() {
           label="ชื่อ"
           variant="outlined"
           fullWidth
-          value={firstName}
+          value={firstName ? firstName : ""}
         />
 
         <TextField
@@ -95,7 +97,7 @@ export default function InputInfo() {
           label="นามสกุล"
           variant="outlined"
           fullWidth
-          value={lastName}
+          value={lastName ? lastName : ""}
         />
 
         <TextField
@@ -103,7 +105,7 @@ export default function InputInfo() {
           label="เบอร์โทร"
           variant="outlined"
           fullWidth
-          value={phoneNumber}
+          value={phoneNumber ? phoneNumber : ""}
         />
 
         <FormControl fullWidth>
@@ -111,13 +113,18 @@ export default function InputInfo() {
           <Select
             labelId="facultySelect"
             id="facultySelect"
-            value={faculty}
+            value={faculty !== null ? faculty : "ไม่ระบุ"}
             label="faculty"
             onChange={handleChange}
           >
-            <MenuItem value={"Faculty 1"}>Faculty 1</MenuItem>
-            <MenuItem value={"Faculty 2"}>Faculty 2</MenuItem>
-            <MenuItem value={"Faculty 3"}>Faculty 3</MenuItem>
+            {FACULTY.map((faculty, index) => {
+              return (
+                <MenuItem key={index} value={faculty.value}>
+                  {faculty.F_NAME_TH}
+                </MenuItem>
+              );
+            })}
+            <MenuItem value={"ไม่ระบุ"}>ไม่ระบุ</MenuItem>
           </Select>
         </FormControl>
 
@@ -126,7 +133,7 @@ export default function InputInfo() {
           label="รหัสนักศึกษา"
           variant="outlined"
           fullWidth
-          value={studentId}
+          value={studentId ? studentId : ""}
         />
 
         <Button variant="contained" onClick={handleSubmit}>

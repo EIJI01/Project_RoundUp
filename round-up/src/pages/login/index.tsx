@@ -1,5 +1,6 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import React from "react";
+import Router, { useRouter } from "next/router";
 
 const Login = () => {
   return (
@@ -14,10 +15,17 @@ const Login = () => {
         gap: "64px",
       }}
     >
-      <Typography sx={{ fontWeight: "bold", fontSize: "32px" }}>Welcome back</Typography>
+      <Typography sx={{ fontWeight: "bold", fontSize: "32px" }}>
+        Welcome back
+      </Typography>
       <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <TextField label="Enter your KKU ID" variant="outlined" fullWidth />
-        <TextField label="Enter your password" variant="outlined" fullWidth type="password" />
+        <TextField
+          label="Enter your password"
+          variant="outlined"
+          fullWidth
+          type="password"
+        />
       </Box>
       <Button
         variant="contained"
@@ -31,6 +39,7 @@ const Login = () => {
           textTransform: "capitalize",
           paddingY: "16px",
         }}
+        onClick={() => {}}
       >
         Login
       </Button>
