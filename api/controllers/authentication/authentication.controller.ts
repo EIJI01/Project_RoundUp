@@ -3,7 +3,7 @@ import admin from "../../database/config";
 import axios from "axios";
 import httpStatus from "http-status";
 
-const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
     const response = await axios
@@ -28,7 +28,7 @@ const loginUser = async (req: Request, res: Response) => {
   }
 };
 
-const registerUser = async (req: Request, res: Response) => {
+export const registerUser = async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
 
@@ -55,4 +55,3 @@ const registerUser = async (req: Request, res: Response) => {
   }
 };
 
-export { loginUser, registerUser };
