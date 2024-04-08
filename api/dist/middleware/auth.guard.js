@@ -18,15 +18,16 @@ const config_1 = __importDefault(require("../database/config"));
 const authGuard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        if (!req.headers.authorization && !((_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.startsWith("Bearer ")))
-            return res.status(http_status_1.default.UNAUTHORIZED).json({ error: "Authorization header missing" });
+        if (!req.headers.authorization && !((_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.startsWith("Bearer "))) {
+            return res.status(http_status_1.default.UNAUTHORIZED)
+                .json({ error: "Authorization header missing" });
+        }
         const idToken = req.headers.authorization.split(" ")[1];
         if (!idToken) {
-            return res.status(http_status_1.default.UNAUTHORIZED).json({ error: "Authorization header missing" });
+            return res.status(http_status_1.default.UNAUTHORIZED)
+                .json({ error: "Authorization header missing " });
         }
-        yield config_1.default
-            .auth()
-            .verifyIdToken(idToken)
+        yield config_1.default.auth().verifyIdToken(idToken)
             .then((decodedToken) => {
             const uid = decodedToken.uid;
             req.user = uid;
@@ -38,7 +39,8 @@ const authGuard = (req, res, next) => __awaiter(void 0, void 0, void 0, function
     }
     catch (error) {
         console.error("Authentication error:", error);
-        res.status(http_status_1.default.UNAUTHORIZED).json({ error: "Unauthorized" });
+        res.status(http_status_1.default.UNAUTHORIZED)
+            .json({ error: "Unauthorized" });
     }
 });
 exports.authGuard = authGuard;
