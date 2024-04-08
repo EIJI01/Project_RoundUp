@@ -1,8 +1,21 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import React from "react";
+import React, { ChangeEvent } from "react";
 import Router, { useRouter } from "next/router";
+import { LOGIN_ENDPOINT } from "../../fetcher/endpoint/authentication";
+import { useAuth } from "@/@core/provider/hooks/useAuth";
+import { loginValueType } from "@/model/context/authentication/authentication";
 
 const Login = () => {
+  const auth = useAuth();
+
+  const [email, setEmail] = React.useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
+
+  const handleSubmitLogin = async () => {
+    const loginValue: loginValueType = { email: email, password: password };
+    auth.login(LOGIN_ENDPOINT, loginValue);
+  };
+
   return (
     <Box
       sx={{
@@ -19,12 +32,22 @@ const Login = () => {
         Welcome back
       </Typography>
       <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        <TextField label="Enter your student ID" variant="outlined" fullWidth />
+        <TextField
+          label="Enter your student ID"
+          variant="outlined"
+          fullWidth
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setEmail(event.target.value);
+          }}
+        />
         <TextField
           label="Enter your password"
           variant="outlined"
           fullWidth
           type="password"
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setPassword(event.target.value);
+          }}
         />
       </Box>
       <Button
@@ -39,7 +62,7 @@ const Login = () => {
           textTransform: "capitalize",
           paddingY: "16px",
         }}
-        onClick={() => {}}
+        onClick={handleSubmitLogin}
       >
         Login
       </Button>

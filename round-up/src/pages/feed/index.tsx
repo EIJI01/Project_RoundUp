@@ -24,6 +24,7 @@ import { FACULTY } from "@/data/faculty";
 import { CATEGORY } from "@/data/category";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/router";
+import { useAuth } from "@/@core/provider/hooks/useAuth";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -42,6 +43,8 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 const RoundUpFeed = () => {
   const router = useRouter();
+
+  const auth = useAuth();
 
   const [expanded, setExpanded] = React.useState<number | null>(null);
   const [value, setValue] = React.useState<string>("");
@@ -76,6 +79,10 @@ const RoundUpFeed = () => {
     setExpanded(index);
   };
 
+  useEffect(() => {
+    console.log(auth.token);
+  });
+
   useEffect(() => {}, [filterFaculty]);
   useEffect(() => {}, [filterCategory]);
 
@@ -95,7 +102,12 @@ const RoundUpFeed = () => {
         >
           PhakPhoom
         </Typography>
-        <Box sx={{ display: "flex", gap: "10px", cursor: "pointer" }}>
+        <Box
+          sx={{ display: "flex", gap: "10px", cursor: "pointer" }}
+          onClick={() => {
+            auth.logout();
+          }}
+        >
           <Typography>Logout</Typography>
           <LogoutIcon></LogoutIcon>
         </Box>
