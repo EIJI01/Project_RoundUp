@@ -14,7 +14,13 @@ export const anonymousComment = async (req: Request, res: Response) => {
         }
         const commentCollection = db.collection("comment").doc();
         await commentCollection.set({ anonymousId, commentDetail, eventId, ratting})
-            .then(() => res.status(httpStatus.OK).json("Comment success"));
+        const commentId = commentCollection.id;
+
+        const eventDocRef = db.collection("event").doc(eventId);
+        await eventDocRef.update({
+            commentId: admin.firestore.FieldValue.arrayUnion(commentId) });
+
+        res.status(httpStatus.OK).json({message: "Comment success"})
     }catch(error: any)
     {
         console.error("Failed to comment anonymous:", error);
@@ -35,7 +41,13 @@ export const userComment = async (req: IGetUserAuthInfoRequest, res: Response) =
         }
         const commentCollection = db.collection("comment").doc();
         await commentCollection.set({ userId:userId, commentDetail, eventId, ratting})
-            .then(() => res.status(httpStatus.OK).json("Comment success"));
+        const commentId = commentCollection.id;
+
+        const eventDocRef = db.collection("event").doc(eventId);
+        await eventDocRef.update({
+            commentId: admin.firestore.FieldValue.arrayUnion(commentId) });
+
+        res.status(httpStatus.OK).json({message: "Comment success"})
     }catch(error: any)
     {
         console.error("Failed to comment anonymous:", error);

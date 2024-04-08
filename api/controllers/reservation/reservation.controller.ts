@@ -8,6 +8,7 @@ const db = admin.firestore();
 export const userReservation = async (req: IGetUserAuthInfoRequest, res: Response) => {
     try {
         const userId = req.user;
+        const {eventId} = req.body;
         const docRef = db.collection("user").doc(userId);
         const userData = await docRef.get();
         if(!userData.exists){
@@ -16,7 +17,13 @@ export const userReservation = async (req: IGetUserAuthInfoRequest, res: Respons
         }
         const checkInRef = db.collection("reserve").doc();
         await checkInRef.set({userId: userId, reserveAt: toThaiDateString(new Date())})
-        res.status(httpStatus.OK).json("User reserve success");
+        const reserveId = checkInRef.id;
+
+        const eventDocRef = db.collection("event").doc(eventId);
+        await eventDocRef.update({
+            reserveId: admin.firestore.FieldValue.arrayUnion(reserveId) });
+
+        res.status(httpStatus.OK).json({message: "User reserve success"});
 
     }catch(error:any)
     {
