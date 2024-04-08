@@ -4,7 +4,7 @@ import {
   AuthContextProps,
 } from "@/model/context/authentication/authentication";
 import { useRouter } from "next/router";
-import { loginFetcher } from "@/fetcher/api/authenticationAPI";
+import { loginFetcher } from "@/fetcher/api/authenticationAPI/authenticationAPI";
 import { loginValueType } from "@/model/context/authentication/authentication";
 // import { userType } from "@/model/context/authentication/authentication";
 

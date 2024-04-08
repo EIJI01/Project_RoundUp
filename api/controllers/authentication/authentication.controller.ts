@@ -32,16 +32,13 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { firstName, lastName, phoneNumber, faculty, studentID, password } = req.body;
+    const {email,  firstName, lastName, phoneNumber, faculty, studentID, password } = req.body;
 
     await admin.auth()
       .createUser({
-        firstName: firstName,
-        lastName: lastName,
-        phoneNumber: phoneNumber,
-        faculty: faculty, 
-        studentID: studentID,
-        password:password
+        email: email,
+        password: password,
+        displayName: firstName + " " + lastName
       })
       .then((userCredential: any) => {
         console.log(userCredential);
@@ -49,12 +46,12 @@ export const registerUser = async (req: Request, res: Response) => {
              .collection("user")
              .doc(userCredential.uid)
              .set({
+              email: email,
               firstName: firstName, 
               lastName: lastName, 
               phoneNumber: phoneNumber, 
               faculty: faculty, 
-              studentID: studentID, 
-              password: password
+              studentID: studentID,
               })
         res.status(httpStatus.OK)
            .json({ msg: "Create user success" });

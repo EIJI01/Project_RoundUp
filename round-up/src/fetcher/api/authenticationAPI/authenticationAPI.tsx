@@ -33,6 +33,7 @@ export const loginFetcher = async (
 export const registerFetcher = async (
   url: string,
   {
+    email,
     firstName,
     lastName,
     phoneNumber,
@@ -45,6 +46,7 @@ export const registerFetcher = async (
     const response = await axios.post(
       url,
       {
+        email: email,
         firstName: firstName,
         lastName: lastName,
         phoneNumber: phoneNumber,

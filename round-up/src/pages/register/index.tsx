@@ -14,8 +14,8 @@ import React, { ChangeEvent, useState } from "react";
 import { Theme, useTheme } from "@mui/material/styles";
 import { FACULTY } from "@/data/faculty";
 import { useRouter } from "next/router";
-import { registerFetcher } from "@/fetcher/api/authenticationAPI";
-import { REGISTER_ENDPOINT } from "@/fetcher/endpoint/authentication";
+import { registerFetcher } from "@/fetcher/api/authenticationAPI/authenticationAPI";
+import { REGISTER_ENDPOINT } from "@/fetcher/endpoint/authentication/authentication";
 import { registerValueType } from "@/model/context/authentication/authentication";
 
 const Register = () => {
@@ -25,6 +25,7 @@ const Register = () => {
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
   const [faculty, setFaculty] = useState<string | null>(null);
   const [studentID, setStudentID] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
 
   const theme = useTheme();
@@ -46,6 +47,7 @@ const Register = () => {
 
   const handleSubmitRegister = async () => {
     const registerValue: registerValueType = {
+      email: email,
       firstName: firstName,
       lastName: lastName,
       phoneNumber: phoneNumber,
@@ -148,6 +150,14 @@ const Register = () => {
           fullWidth
           onChange={(event: ChangeEvent<HTMLInputElement>) => {
             setStudentID(event.target.value);
+          }}
+        />
+        <TextField
+          label="Email"
+          variant="outlined"
+          fullWidth
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setEmail(event.target.value);
           }}
         />
         <TextField

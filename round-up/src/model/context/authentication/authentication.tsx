@@ -11,6 +11,7 @@ export interface registerValueType {
   phoneNumber: string | null;
   faculty: string | null;
   studentID: string | null;
+  email: string | null;
   password: string | null;
 }
 
