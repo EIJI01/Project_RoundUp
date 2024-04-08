@@ -5,7 +5,8 @@ import { IGetUserAuthInfoRequest } from "../models/use";
 
 export const authGuard = async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {
   try {
-    if (!req.headers.authorization && !req.headers.authorization?.startsWith("Bearer ")) {
+    if (!req.headers.authorization && 
+        !req.headers.authorization?.startsWith("Bearer ")) {
       return res.status(httpStatus.UNAUTHORIZED)
                 .json({ error: "Authorization header missing" });
     }
