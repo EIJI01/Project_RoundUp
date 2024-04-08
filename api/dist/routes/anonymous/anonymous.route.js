@@ -4,9 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const comment_controller_1 = require("../../controllers/comments/comment.controller");
-const auth_guard_1 = require("../../middleware/auth.guard");
+const anonymous_controller_1 = require("../../controllers/anonymous/anonymous.controller");
 const router = express_1.default.Router();
-router.post("/anonymous", comment_controller_1.anonymousComment);
-router.post("/user", auth_guard_1.authGuard, comment_controller_1.userComment);
+router.post("/register", anonymous_controller_1.registerAnonymous);
 exports.default = router;

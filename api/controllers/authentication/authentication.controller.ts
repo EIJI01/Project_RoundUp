@@ -25,7 +25,7 @@ export const loginUser = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Error logging in:", error);
-    res.status(401)
+    res.status(httpStatus.UNAUTHORIZED)
        .json({ error: "Invalid login credentials" });
   }
 };
@@ -57,7 +57,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
   } catch (error) {
     console.error(error);
-    res.status(500)
+    res.status(httpStatus.INTERNAL_SERVER_ERROR)
        .json({ error: "Internal server error" });
   }
 };
