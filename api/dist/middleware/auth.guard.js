@@ -18,7 +18,8 @@ const config_1 = __importDefault(require("../database/config"));
 const authGuard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        if (!req.headers.authorization && !((_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.startsWith("Bearer "))) {
+        if (!req.headers.authorization &&
+            !((_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.startsWith("Bearer "))) {
             return res.status(http_status_1.default.UNAUTHORIZED)
                 .json({ error: "Authorization header missing" });
         }

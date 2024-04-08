@@ -26,7 +26,8 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             returnSecureToken: true,
         });
         const { idToken } = response.data;
-        const userRecord = yield config_1.default.auth().getUserByEmail(email);
+        const userRecord = yield config_1.default.auth()
+            .getUserByEmail(email);
         res.status(http_status_1.default.OK).json({
             status: "success",
             msg: "User logged in successfully.",
@@ -36,7 +37,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (error) {
         console.error("Error logging in:", error);
-        res.status(401)
+        res.status(http_status_1.default.UNAUTHORIZED)
             .json({ error: "Invalid login credentials" });
     }
 });
@@ -56,18 +57,19 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 .collection("user")
                 .doc(userCredential.uid)
                 .set({ email: email, firstName: name });
-            res.status(http_status_1.default.OK).json({ msg: "Create user success" });
+            res.status(http_status_1.default.OK)
+                .json({ msg: "Create user success" });
         })
             .catch((error) => {
-            const errorCode = error.code;
             const errorMessage = error.message;
-            console.error("Sign in error:", errorCode, errorMessage);
-            res.status(400).json({ error: errorMessage });
+            res.status(400)
+                .json({ error: errorMessage });
         });
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Internal server error" });
+        res.status(http_status_1.default.INTERNAL_SERVER_ERROR)
+            .json({ error: "Internal server error" });
     }
 });
 exports.registerUser = registerUser;
