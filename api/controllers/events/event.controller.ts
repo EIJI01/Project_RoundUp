@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import admin from "../../database/config";
-import { IGetUserAuthInfoRequest, UserResponse } from "../../models/use";
 
 const db = admin.firestore();
 
