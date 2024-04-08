@@ -49,13 +49,15 @@ const AuthProvider = ({ children }: AuthContextProps) => {
     //   email: responseData.user.email,
     // };
     // setUser(userData);
-    localStorage.setItem("token", JSON.stringify(responseData.token));
+    localStorage.setItem("token", responseData.token);
+    setToken(responseData.token);
     router.push("feed");
   };
 
   const handleLogout = () => {
     // setUser(null);
     setToken(null);
+    localStorage.removeItem("token");
     router.push(".");
   };
 
