@@ -5,6 +5,15 @@ import { ReactNode } from "react";
 //   email: string;
 // }
 
+export interface registerValueType {
+  firstName: string | null;
+  lastName: string | null;
+  phoneNumber: string | null;
+  faculty: string | null;
+  studentID: string | null;
+  password: string | null;
+}
+
 export interface loginValueType {
   email: string | null;
   password: string | null;

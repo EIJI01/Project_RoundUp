@@ -10,14 +10,22 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Theme, useTheme } from "@mui/material/styles";
 import { FACULTY } from "@/data/faculty";
 import { useRouter } from "next/router";
+import { registerFetcher } from "@/fetcher/api/authenticationAPI";
+import { REGISTER_ENDPOINT } from "@/fetcher/endpoint/authentication";
+import { registerValueType } from "@/model/context/authentication/authentication";
 
 const Register = () => {
   const router = useRouter();
-  const [faculty, setFaculty] = React.useState<string | null>(null);
+  const [firstName, setFirstName] = useState<string | null>(null);
+  const [lastName, setLastName] = useState<string | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
+  const [faculty, setFaculty] = useState<string | null>(null);
+  const [studentID, setStudentID] = useState<string | null>(null);
+  const [password, setPassword] = useState<string | null>(null);
 
   const theme = useTheme();
   function getStyles(name: string, personName: string[], theme: Theme) {
@@ -34,6 +42,18 @@ const Register = () => {
       target: { value },
     } = event;
     setFaculty(value);
+  };
+
+  const handleSubmitRegister = async () => {
+    const registerValue: registerValueType = {
+      firstName: firstName,
+      lastName: lastName,
+      phoneNumber: phoneNumber,
+      faculty: faculty,
+      studentID: studentID,
+      password: password,
+    };
+    await registerFetcher(REGISTER_ENDPOINT, registerValue);
   };
 
   const ITEM_HEIGHT = 48;
@@ -76,9 +96,30 @@ const Register = () => {
         Register to get started
       </Typography>
       <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        <TextField label="First name" variant="outlined" fullWidth />
-        <TextField label="Last name" variant="outlined" fullWidth />
-        <TextField label="Telephone number" variant="outlined" fullWidth />
+        <TextField
+          label="First name"
+          variant="outlined"
+          fullWidth
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setFirstName(event.target.value);
+          }}
+        />
+        <TextField
+          label="Last name"
+          variant="outlined"
+          fullWidth
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setLastName(event.target.value);
+          }}
+        />
+        <TextField
+          label="Telephone number"
+          variant="outlined"
+          fullWidth
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setPhoneNumber(event.target.value);
+          }}
+        />
         <FormControl sx={{ width: "100%" }}>
           <InputLabel id="demo-multiple-name-label">Faculty</InputLabel>
           <Select
@@ -101,12 +142,22 @@ const Register = () => {
             <MenuItem value={"ไม่ระบุ"}>ไม่ระบุ</MenuItem>
           </Select>
         </FormControl>
-        <TextField label="Student ID" variant="outlined" fullWidth />
+        <TextField
+          label="Student ID"
+          variant="outlined"
+          fullWidth
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setStudentID(event.target.value);
+          }}
+        />
         <TextField
           label="Password"
           variant="outlined"
           fullWidth
           type="password"
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setPassword(event.target.value);
+          }}
         />
       </Box>
       <Box
@@ -130,9 +181,7 @@ const Register = () => {
             textTransform: "capitalize",
             paddingY: "16px",
           }}
-          onClick={() => {
-            // router.push(".");
-          }}
+          onClick={handleSubmitRegister}
         >
           Register
         </Button>
