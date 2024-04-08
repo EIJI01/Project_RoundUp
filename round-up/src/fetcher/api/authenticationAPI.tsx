@@ -20,7 +20,7 @@ export const loginFetcher = async (
       console.log(response);
       return response.data;
     } else {
-      throw new Error("Failed to create course");
+      throw new Error("Failed to login");
     }
   } catch (error) {
     console.log(error);
