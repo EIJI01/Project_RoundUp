@@ -13,8 +13,10 @@ import {
 import React from "react";
 import { Theme, useTheme } from "@mui/material/styles";
 import { FACULTY } from "@/data/faculty";
+import { useRouter } from "next/router";
 
 const Register = () => {
+  const router = useRouter();
   const [faculty, setFaculty] = React.useState<string | null>(null);
 
   const theme = useTheme();
@@ -107,21 +109,48 @@ const Register = () => {
           type="password"
         />
       </Box>
-      <Button
-        variant="contained"
-        disableElevation
-        fullWidth
-        size="large"
+      <Box
         sx={{
-          color: "white",
-          backgroundColor: "black",
-          borderRadius: "8px",
-          textTransform: "capitalize",
-          paddingY: "16px",
+          width: "100%",
+          display: "flex",
+          gap: "24px",
+          flexDirection: "column",
         }}
       >
-        Register
-      </Button>
+        {" "}
+        <Button
+          variant="contained"
+          disableElevation
+          fullWidth
+          size="large"
+          sx={{
+            color: "white",
+            backgroundColor: "black",
+            borderRadius: "8px",
+            textTransform: "capitalize",
+            paddingY: "16px",
+          }}
+          onClick={() => {
+            // router.push(".");
+          }}
+        >
+          Register
+        </Button>
+        <Button
+          disableElevation
+          fullWidth
+          sx={{
+            color: "black",
+            backgroundColor: "white",
+            textTransform: "capitalize",
+          }}
+          onClick={() => {
+            router.push(".");
+          }}
+        >
+          Back To Home Page
+        </Button>
+      </Box>
     </Box>
   );
 };

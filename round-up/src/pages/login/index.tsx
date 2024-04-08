@@ -1,12 +1,13 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import React, { ChangeEvent } from "react";
-import Router, { useRouter } from "next/router";
+import React from "react";
+import { useRouter } from "next/router";
 import { LOGIN_ENDPOINT } from "../../fetcher/endpoint/authentication";
 import { useAuth } from "@/@core/provider/hooks/useAuth";
 import { loginValueType } from "@/model/context/authentication/authentication";
 
 const Login = () => {
   const auth = useAuth();
+  const router = useRouter();
 
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
@@ -50,22 +51,46 @@ const Login = () => {
           }}
         />
       </Box>
-      <Button
-        variant="contained"
-        disableElevation
-        fullWidth
-        size="large"
+      <Box
         sx={{
-          color: "white",
-          backgroundColor: "black",
-          borderRadius: "8px",
-          textTransform: "capitalize",
-          paddingY: "16px",
+          width: "100%",
+          display: "flex",
+          gap: "24px",
+          flexDirection: "column",
         }}
-        onClick={handleSubmitLogin}
       >
-        Login
-      </Button>
+        {" "}
+        <Button
+          variant="contained"
+          disableElevation
+          fullWidth
+          size="large"
+          sx={{
+            color: "white",
+            backgroundColor: "black",
+            borderRadius: "8px",
+            textTransform: "capitalize",
+            paddingY: "16px",
+          }}
+          onClick={handleSubmitLogin}
+        >
+          Login
+        </Button>
+        <Button
+          disableElevation
+          fullWidth
+          sx={{
+            color: "black",
+            backgroundColor: "white",
+            textTransform: "capitalize",
+          }}
+          onClick={() => {
+            router.push(".");
+          }}
+        >
+          Back To Home Page
+        </Button>
+      </Box>
     </Box>
   );
 };
