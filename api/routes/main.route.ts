@@ -7,7 +7,7 @@ import commentApi from "./comments/comment.router"
 const router = express.Router();
 
 router.use("/authentication", authenticationRouter);
-router.use("/api", eventApi);
+router.use("/event", eventApi);
 router.use("/user", userAPI);
 router.use("/comment", commentApi);
 
