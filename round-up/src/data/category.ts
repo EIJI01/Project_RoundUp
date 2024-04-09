@@ -15,4 +15,5 @@ export const CATEGORY = [
   { CID: "14", C_NAME_TH: "สวนและต้นไม้", value: "garden" },
   { CID: "15", C_NAME_TH: "หนังสือ", value: "book" },
   { CID: "16", C_NAME_TH: "อาหาร", value: "food" },
+  { CID: "17", C_NAME_TH: "ทั้งหมด", value: "all" },
 ];

@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { IGetUserAuthInfoRequest, UserResponse } from "../../models/use";
+import { IGetUserAuthInfoRequest, UserResponse } from "../../models/user";
 import httpStatus from "http-status";
 import admin from "../../database/config";
 

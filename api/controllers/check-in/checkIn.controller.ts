@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 import admin from "../../database/config";
 import { toThaiDateString } from "../../common/date";
-import { IGetUserAuthInfoRequest } from "../../models/use";
+import { IGetUserAuthInfoRequest } from "../../models/user";
 
 const db = admin.firestore();
 export const anonymousCheckIn = async (req:Request, res: Response) => {

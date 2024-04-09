@@ -19,7 +19,6 @@ import {
 import React, { useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { EVENTS } from "@/data/mock";
 import { FACULTY } from "@/data/faculty";
 import { CATEGORY } from "@/data/category";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -27,7 +26,7 @@ import { useRouter } from "next/router";
 import { useAuth } from "@/@core/provider/hooks/useAuth";
 import { GET_LIST_EVENT } from "@/fetcher/endpoint/eventEP/eventEP";
 import { getListEventFetcher } from "@/fetcher/api/eventAPI/eventAPI";
-import { eventModel } from "@/model/eventModel/eventModel";
+import { listEventModel } from "@/model/eventModel/eventModel";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -49,7 +48,13 @@ const RoundUpFeed = () => {
 
   const auth = useAuth();
 
-  const [listEvent, setListEvent] = React.useState<eventModel[] | null>(null);
+  const [defaultListEvent, setDefaultListEvent] = React.useState<
+    listEventModel[] | null
+  >(null);
+
+  const [listEvent, setListEvent] = React.useState<listEventModel[] | null>(
+    null
+  );
 
   const [expanded, setExpanded] = React.useState<number | null>(null);
   const [value, setValue] = React.useState<string>("");
@@ -86,20 +91,31 @@ const RoundUpFeed = () => {
 
   const fetchListEvent = async () => {
     const eventData = await getListEventFetcher(GET_LIST_EVENT, auth.token);
-    console.log(eventData);
 
     if (eventData.length > 0) {
-      const formattedEventData: eventModel[] = eventData.map(
-        (event: eventModel) => {
+      const formattedEventData: listEventModel[] = eventData.map(
+        (event: listEventModel) => {
           return {
             ImageName: event.ImageName,
             ImageURL: event.ImageURL,
             eventName: event.eventName,
             eventDetail: event.eventDetail,
+            isLimited: event.isLimited,
+            quantity: event.quantity,
+            numberOfReserve:
+              typeof event.reserveId !== "undefined"
+                ? event.reserveId?.length
+                : 0,
+            faculty: event.faculty,
+            category: event.category,
+            startDate: event.startDate,
+            endDate: event.endDate,
           };
         }
       );
+      // console.log(formattedEventData);
       setListEvent(formattedEventData);
+      setDefaultListEvent(formattedEventData);
     }
   };
 
@@ -108,8 +124,56 @@ const RoundUpFeed = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // useEffect(() => {}, [filterFaculty]);
-  // useEffect(() => {}, [filterCategory]);
+  useEffect(() => {
+    if (filterFaculty.length > 0) {
+      const filterFacultyValue = FACULTY.filter((faculty) => {
+        return filterFaculty.includes(faculty.F_NAME_TH);
+      }).map((faculty) => {
+        return faculty.value;
+      });
+
+      if (defaultListEvent && listEvent && listEvent.length > 0) {
+        const filterListEvent = defaultListEvent.filter((event) => {
+          return event.faculty?.some((faculty) =>
+            filterFacultyValue.includes(faculty)
+          );
+        });
+        // console.log(filterListEvent);
+        setListEvent(filterListEvent);
+      }
+
+      // console.log(filterFacultyValue);
+    } else {
+      setListEvent(defaultListEvent);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterFaculty]);
+
+  useEffect(() => {
+    if (filterCategory.length > 0) {
+      const filterCategoryValue = CATEGORY.filter((category) => {
+        return filterCategory.includes(category.C_NAME_TH);
+      }).map((category) => {
+        return category.value;
+      });
+
+      if (defaultListEvent && listEvent && listEvent.length > 0) {
+        const filterListEvent = defaultListEvent.filter((event) => {
+          return event.category?.some((category) =>
+            filterCategoryValue.includes(category)
+          );
+        });
+        // console.log(filterListEvent);
+        setListEvent(filterListEvent);
+      }
+
+      // console.log(filterCategoryValue);
+    } else {
+      setListEvent(defaultListEvent);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterCategory]);
 
   return (
     <Box sx={{ height: "fit-content", width: "100%", padding: "32px" }}>
@@ -201,7 +265,7 @@ const RoundUpFeed = () => {
       </Box>
 
       {(listEvent && listEvent?.length > 0
-        ? (listEvent as eventModel[])
+        ? (listEvent as listEventModel[])
         : []
       ).map((data, index) => {
         return (
@@ -242,9 +306,15 @@ const RoundUpFeed = () => {
                 <Typography variant="body2" color="text.secondary">
                   {data.eventName}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  0 / 30
-                </Typography>
+                {data.isLimited === true ? (
+                  <Typography variant="body2" color="text.secondary">
+                    {data.numberOfReserve} / {data.quantity}
+                  </Typography>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    Unlimited
+                  </Typography>
+                )}
               </Box>
 
               <Box

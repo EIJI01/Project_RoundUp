@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { IGetUserAuthInfoRequest } from "../../models/use";
+import { IGetUserAuthInfoRequest } from "../../models/user";
 import admin from "../../database/config";
 import httpStatus from "http-status";
 import { toThaiDateString } from "../../common/date";

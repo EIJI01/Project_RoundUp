@@ -27,7 +27,6 @@ export interface loginValueType {
 
 export interface AuthValuesType {
   user: userType | null;
-
   token: string | null;
   login: (url: string, { email, password }: loginValueType) => void;
   logout: () => void;

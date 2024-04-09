@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import httpStatus from "http-status";
 import admin from "../database/config";
-import { IGetUserAuthInfoRequest } from "../models/use";
+import { IGetUserAuthInfoRequest } from "../models/user";
 
 export const authGuard = async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {
   try {

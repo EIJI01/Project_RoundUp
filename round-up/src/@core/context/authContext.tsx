@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import {
   AuthValuesType,
   AuthContextProps,
@@ -25,23 +25,38 @@ const AuthProvider = ({ children }: AuthContextProps) => {
 
   const router = useRouter();
 
+  let localToken =
+    typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+
+  useEffect(() => {
+    if (localToken) {
+      localStorage.setItem("token", localToken);
+      handleFetchUserInformation(localToken);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localToken]);
+
   const handleLogin = async (
     url: string,
     { email, password }: loginValueType
   ) => {
-    const loginResponse: string = await loginFetcher(url, { email, password });
-    if (loginResponse) {
-      localStorage.setItem("token", loginResponse);
-      setToken(loginResponse);
+    const responseToken: string = await loginFetcher(url, { email, password });
 
-      const userInformation: userType = await userInformationFetcher(
-        GET_USER_INFORMATION,
-        loginResponse
-      );
-      if (userInformation) {
-        setUser(userInformation);
-        router.push("event");
-      }
+    if (responseToken) {
+      localStorage.setItem("token", responseToken);
+      setToken(responseToken);
+      handleFetchUserInformation(responseToken);
+      router.push("event");
+    }
+  };
+
+  const handleFetchUserInformation = async (token: string) => {
+    const userInformation: userType = await userInformationFetcher(
+      GET_USER_INFORMATION,
+      token
+    );
+    if (userInformation) {
+      setUser(userInformation);
     }
   };
 
