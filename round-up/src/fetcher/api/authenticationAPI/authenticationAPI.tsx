@@ -2,7 +2,7 @@ import axios from "axios";
 import {
   loginValueType,
   registerValueType,
-} from "@/model/context/authentication/authentication";
+} from "@/model/authenticationModel/authenticationModel";
 
 export const loginFetcher = async (
   url: string,
@@ -20,8 +20,7 @@ export const loginFetcher = async (
     );
 
     if (response.status === 200) {
-      console.log(response);
-      return response.data;
+      return response.data.token;
     } else {
       throw new Error("Failed to fetch login");
     }
@@ -62,10 +61,31 @@ export const registerFetcher = async (
     );
 
     if (response.status === 200) {
-      console.log(response);
-      return response.data;
+      return response.data.msg;
     } else {
       throw new Error("Failed to fetch register");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const userInformationFetcher = async (
+  url: string,
+  token: string | null
+) => {
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    });
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Failed to fetch user information");
     }
   } catch (error) {
     console.log(error);

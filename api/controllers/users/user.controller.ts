@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { IGetUserAuthInfoRequest } from "../../models/use";
+import { IGetUserAuthInfoRequest, UserResponse } from "../../models/use";
 import httpStatus from "http-status";
 import admin from "../../database/config";
 
@@ -7,6 +7,8 @@ const db = admin.firestore();
 
 export const getUserInformation = async (req: IGetUserAuthInfoRequest, res: Response) => {
     const userId = req.user;
+    console.log(userId);
+    
     try{
         const userDb = db.collection("user").doc(userId);
         const userData = await userDb.get();
@@ -14,8 +16,17 @@ export const getUserInformation = async (req: IGetUserAuthInfoRequest, res: Resp
             return res.status(httpStatus.NOT_FOUND)
                       .json({error: "User not found"})
         }
-        const userResult = userData.data();
-        res.status(httpStatus.OK).json(userResult);
+
+        const userResult: UserResponse = userData.data();
+        const uid: string = userData.id
+        res.status(httpStatus.OK).json({
+            uid : uid, 
+            firstName: userResult.firstName, 
+            lastName: userResult.lastName,
+            phoneNumber: userResult.phoneNumber,
+            faculty: userResult.faculty,
+            email: userResult.email,
+            });
     }catch(error: any)
     {
         console.error("Error fetching event:", error);

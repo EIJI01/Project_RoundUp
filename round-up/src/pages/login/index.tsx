@@ -1,9 +1,9 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import React from "react";
 import { useRouter } from "next/router";
-import { LOGIN_ENDPOINT } from "../../fetcher/endpoint/authentication/authentication";
+import { LOGIN_ENDPOINT } from "../../fetcher/endpoint/authenticationEP/authenticationEP";
 import { useAuth } from "@/@core/provider/hooks/useAuth";
-import { loginValueType } from "@/model/context/authentication/authentication";
+import { loginValueType } from "@/model/authenticationModel/authenticationModel";
 
 const Login = () => {
   const auth = useAuth();

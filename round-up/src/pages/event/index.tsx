@@ -25,6 +25,9 @@ import { CATEGORY } from "@/data/category";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/router";
 import { useAuth } from "@/@core/provider/hooks/useAuth";
+import { GET_LIST_EVENT } from "@/fetcher/endpoint/eventEP/eventEP";
+import { getListEventFetcher } from "@/fetcher/api/eventAPI/eventAPI";
+import { eventModel } from "@/model/eventModel/eventModel";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -45,6 +48,8 @@ const RoundUpFeed = () => {
   const router = useRouter();
 
   const auth = useAuth();
+
+  const [listEvent, setListEvent] = React.useState<eventModel[] | null>(null);
 
   const [expanded, setExpanded] = React.useState<number | null>(null);
   const [value, setValue] = React.useState<string>("");
@@ -79,12 +84,32 @@ const RoundUpFeed = () => {
     setExpanded(index);
   };
 
-  useEffect(() => {
-    console.log(auth.token);
-  });
+  const fetchListEvent = async () => {
+    const eventData = await getListEventFetcher(GET_LIST_EVENT, auth.token);
+    console.log(eventData);
 
-  useEffect(() => {}, [filterFaculty]);
-  useEffect(() => {}, [filterCategory]);
+    if (eventData.length > 0) {
+      const formattedEventData: eventModel[] = eventData.map(
+        (event: eventModel) => {
+          return {
+            ImageName: event.ImageName,
+            ImageURL: event.ImageURL,
+            eventName: event.eventName,
+            eventDetail: event.eventDetail,
+          };
+        }
+      );
+      setListEvent(formattedEventData);
+    }
+  };
+
+  useEffect(() => {
+    fetchListEvent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // useEffect(() => {}, [filterFaculty]);
+  // useEffect(() => {}, [filterCategory]);
 
   return (
     <Box sx={{ height: "fit-content", width: "100%", padding: "32px" }}>
@@ -98,9 +123,14 @@ const RoundUpFeed = () => {
         }}
       >
         <Typography
-          sx={{ fontSize: "32px", fontWeight: "bold", width: "100%" }}
+          sx={{
+            fontSize: "32px",
+            fontWeight: "bold",
+            width: "75%",
+            overflow: "hidden",
+          }}
         >
-          PhakPhoom
+          {auth.user?.firstName} {auth.user?.lastName}
         </Typography>
         <Box
           sx={{ display: "flex", gap: "10px", cursor: "pointer" }}
@@ -170,7 +200,10 @@ const RoundUpFeed = () => {
         </FormControl>
       </Box>
 
-      {EVENTS.map((data, index) => {
+      {(listEvent && listEvent?.length > 0
+        ? (listEvent as eventModel[])
+        : []
+      ).map((data, index) => {
         return (
           <Card
             key={index}
@@ -185,9 +218,9 @@ const RoundUpFeed = () => {
           >
             <CardMedia
               component="img"
-              image={data.image}
+              image={data.ImageURL !== null ? data.ImageURL : ""}
               alt="Paella dish"
-              onClick={() => (window.location.href = `feed/${data.id}`)}
+              onClick={() => {}}
               sx={{ cursor: "pointer", height: "80%" }}
             />
 
@@ -207,7 +240,7 @@ const RoundUpFeed = () => {
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  {data.title}
+                  {data.eventName}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   0 / 30
@@ -233,7 +266,7 @@ const RoundUpFeed = () => {
                       paddingX: "15px",
                     }}
                   >
-                    {data.detail}
+                    {data.eventDetail}
                   </CardContent>
                 </Collapse>
                 <CardActions

@@ -15,8 +15,8 @@ import { Theme, useTheme } from "@mui/material/styles";
 import { FACULTY } from "@/data/faculty";
 import { useRouter } from "next/router";
 import { registerFetcher } from "@/fetcher/api/authenticationAPI/authenticationAPI";
-import { REGISTER_ENDPOINT } from "@/fetcher/endpoint/authentication/authentication";
-import { registerValueType } from "@/model/context/authentication/authentication";
+import { REGISTER_ENDPOINT } from "@/fetcher/endpoint/authenticationEP/authenticationEP";
+import { registerValueType } from "@/model/authenticationModel/authenticationModel";
 
 const Register = () => {
   const router = useRouter();
@@ -55,7 +55,13 @@ const Register = () => {
       studentID: studentID,
       password: password,
     };
-    await registerFetcher(REGISTER_ENDPOINT, registerValue);
+    const responseMessage = await registerFetcher(
+      REGISTER_ENDPOINT,
+      registerValue
+    );
+    if (responseMessage) {
+      router.push(".");
+    }
   };
 
   const ITEM_HEIGHT = 48;
