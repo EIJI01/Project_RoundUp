@@ -27,6 +27,7 @@ import { useAuth } from "@/@core/provider/hooks/useAuth";
 import { GET_LIST_EVENT } from "@/fetcher/endpoint/eventEP/eventEP";
 import { getListEventFetcher } from "@/fetcher/api/eventAPI/eventAPI";
 import { listEventModel } from "@/model/eventModel/eventModel";
+import moment from "moment";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -55,6 +56,14 @@ const RoundUpFeed = () => {
   const [listEvent, setListEvent] = React.useState<listEventModel[] | null>(
     null
   );
+
+  const [listFilterFacultyEvent, setListFilterFacultyEvent] = React.useState<
+    listEventModel[]
+  >([]);
+
+  const [listFilterCategoryEvent, setListFilterCategoryEvent] = React.useState<
+    listEventModel[]
+  >([]);
 
   const [expanded, setExpanded] = React.useState<number | null>(null);
   const [value, setValue] = React.useState<string>("");
@@ -113,9 +122,19 @@ const RoundUpFeed = () => {
           };
         }
       );
+
+      const filterDateEventData = formattedEventData.filter((event) => {
+        const endDate = event.endDate && new Date(event.endDate);
+        const startDate = event.startDate && new Date(event.startDate);
+        const currentDate = new Date();
+
+        if (endDate && startDate) {
+          return endDate > currentDate && startDate > currentDate;
+        }
+      });
       // console.log(formattedEventData);
-      setListEvent(formattedEventData);
-      setDefaultListEvent(formattedEventData);
+      setListEvent(filterDateEventData);
+      setDefaultListEvent(filterDateEventData);
     }
   };
 
@@ -139,12 +158,12 @@ const RoundUpFeed = () => {
           );
         });
         // console.log(filterListEvent);
-        setListEvent(filterListEvent);
+        setListFilterFacultyEvent(filterListEvent);
       }
 
       // console.log(filterFacultyValue);
     } else {
-      setListEvent(defaultListEvent);
+      setListFilterFacultyEvent([]);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -165,15 +184,60 @@ const RoundUpFeed = () => {
           );
         });
         // console.log(filterListEvent);
-        setListEvent(filterListEvent);
+        setListFilterCategoryEvent(filterListEvent);
       }
 
       // console.log(filterCategoryValue);
     } else {
-      setListEvent(defaultListEvent);
+      setListFilterCategoryEvent([]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterCategory]);
+
+  useEffect(() => {
+    if (defaultListEvent && defaultListEvent?.length > 0) {
+      defaultListEvent?.map((event) => {
+        const currentDate = new Date();
+        const startDate = event.startDate && new Date(event.startDate);
+        // console.log(moment(currentDate).format("HH:mm"));
+        // console.log(startDate);
+        if (
+          startDate &&
+          currentDate.getTime() < startDate.getTime() &&
+          currentDate.getDate() === startDate.getDate() &&
+          currentDate.getMonth() === startDate.getMonth() &&
+          currentDate.getFullYear() === startDate.getFullYear()
+        ) {
+          alert(
+            "วันนี้อีเว้นท์ " +
+              event.eventName +
+              " ที่คุณได้จองไว้จะเริ่มต้นขึ้นเมื่อ " +
+              moment(startDate).format("HH:mm") +
+              " น."
+          );
+        }
+      });
+    }
+  }, [defaultListEvent]);
+
+  useEffect(() => {
+    if (
+      listFilterFacultyEvent.length > 0 ||
+      listFilterCategoryEvent.length > 0
+    ) {
+      const finalFilterEvent = new Set([
+        ...listFilterFacultyEvent,
+        ...listFilterCategoryEvent,
+      ]);
+      // console.log(finalFilterEvent);
+      setListEvent(Array.from(finalFilterEvent));
+    } else {
+      setListEvent(defaultListEvent);
+    }
+
+    // setListEvent(...finalFilterEvent);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listFilterFacultyEvent, listFilterCategoryEvent]);
 
   return (
     <Box sx={{ height: "fit-content", width: "100%", padding: "32px" }}>
