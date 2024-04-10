@@ -22,6 +22,7 @@ export default function EventId() {
   const auth = useAuth();
   const [event, setEvent] = useState<eventDetailModel | null>(null);
   const [isReserved, setIsReserved] = useState<boolean>(false);
+  const [isAvailable, setIsAvailable] = useState<boolean>(true);
 
   const formattedTimeEvent = (timeDate: string | null) => {
     const TimeDate: Date = new Date(timeDate ? timeDate : "");
@@ -56,6 +57,9 @@ export default function EventId() {
     };
     setEvent(formattedEventDetail);
     setIsReserved(eventDetailData.isReserved);
+    setIsAvailable(
+      eventDetailData.reserveId.length < parseInt(eventDetailData.quantity)
+    );
     // console.log(formattedEventDetail);
   };
 
@@ -146,13 +150,19 @@ export default function EventId() {
         {event?.isLimited === true && (
           <Button
             variant="contained"
-            disabled={isReserved}
+            disabled={isReserved === true || isAvailable === false}
             onClick={() => {
               handleReserve();
               setIsReserved(true);
             }}
           >
-            {isReserved === true ? "จองที่แล้ว" : "จองที่"}
+            {isAvailable === true
+              ? isReserved === true
+                ? "จองที่แล้ว"
+                : "จองที่"
+              : isReserved === true
+              ? "จองที่แล้ว"
+              : "จำนวนที่เต็มแล้ว"}
           </Button>
         )}
 

@@ -1,5 +1,5 @@
-import { Box, Button, CardMedia, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, Button, CardMedia, TextField, Typography } from "@mui/material";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "@/@core/provider/hooks/useAuth";
 import { eventDetailModel } from "@/model/eventModel/eventModel";
@@ -11,6 +11,7 @@ const CheckIn = () => {
   const { id: eventId } = router.query;
   const auth = useAuth();
   const [event, setEvent] = useState<eventDetailModel | null>(null);
+  const [quantity, setQuantity] = useState<number>(0);
 
   const handleFetchEventDetail = async () => {
     const eventDetailData = await getEventDetailFetcher(
@@ -68,6 +69,7 @@ const CheckIn = () => {
               alignItems: "center",
               flexDirection: "column",
               width: "100%",
+              gap: "20px",
             }}
           >
             <CardMedia
@@ -76,10 +78,19 @@ const CheckIn = () => {
               alt={event.ImageName !== null ? event.ImageName : ""}
               sx={{ borderRadius: "10px", boxShadow: "0px 0px 4px grey" }}
             />
+            {event.isLimited === false && auth.token === null && (
+              <TextField
+                label="กรุณากรอกจำนวนคนที่เข้ารวม"
+                variant="outlined"
+                fullWidth
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  setQuantity(parseInt(event.target.value));
+                }}
+              />
+            )}
             <Button
               variant="contained"
               fullWidth
-              sx={{ marginTop: "20px" }}
               onClick={() => {
                 if (auth.token !== null) {
                   if (event.isLimited === true) {
