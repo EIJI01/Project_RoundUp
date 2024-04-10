@@ -5,13 +5,23 @@ import { useAuth } from "@/@core/provider/hooks/useAuth";
 import { eventDetailModel } from "@/model/eventModel/eventModel";
 import { getEventDetailFetcher } from "@/fetcher/api/eventAPI/eventAPI";
 import { GET_EVENT_DETAIL_NO_GUARD } from "@/fetcher/endpoint/eventEP/eventEP";
+import {
+  CHECK_IN_WITH_TOKEN_AND_INFO,
+  CHECK_IN_WITH_NO_TOKEN_AND_NO_INFO,
+  CHECK_IN_WITH_TOKEN_AND_NO_INFO,
+} from "@/fetcher/endpoint/checkInEP/checkInEP";
+import {
+  checkInWithTokenAndInfoFetcher,
+  checkInWithTokenAndNoInfoFetcher,
+  checkInWithNoTokenAndNoInfoFetcher,
+} from "@/fetcher/api/checkInAPI/checkInAPI";
 
 const CheckIn = () => {
   const router = useRouter();
   const { id: eventId } = router.query;
   const auth = useAuth();
   const [event, setEvent] = useState<eventDetailModel | null>(null);
-  const [quantity, setQuantity] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(1);
 
   const handleFetchEventDetail = async () => {
     const eventDetailData = await getEventDetailFetcher(
@@ -42,21 +52,46 @@ const CheckIn = () => {
     // console.log(formattedEventDetail);
   };
 
+  const handleCheckInWithNoTokenAndNoInfo = async () => {
+    await checkInWithNoTokenAndNoInfoFetcher(
+      CHECK_IN_WITH_TOKEN_AND_INFO,
+      auth.token,
+      event && event?.eventId !== null ? event?.eventId : "",
+      quantity
+    );
+    if (event !== null) {
+      router.push("./comment/" + event.eventId);
+    }
+  };
+
+  const handleCheckInWithTokenAndInfo = async () => {
+    await checkInWithTokenAndInfoFetcher(
+      CHECK_IN_WITH_TOKEN_AND_INFO,
+      auth.token,
+      event && event?.eventId !== null ? event?.eventId : ""
+    );
+    if (event !== null) {
+      router.push("./comment/" + event.eventId);
+    }
+  };
+
+  const handleCheckInWithTokenAndNoInfo = async () => {
+    const checkInResponse = await checkInWithTokenAndNoInfoFetcher(
+      CHECK_IN_WITH_TOKEN_AND_NO_INFO,
+      auth.token,
+      event && event?.eventId !== null ? event?.eventId : ""
+    );
+    if (event !== null) {
+      router.push("./comment/" + event.eventId);
+    }
+  };
+
   useEffect(() => {
     if (eventId) {
       handleFetchEventDetail();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventId]);
-
-  // useEffect(() => {
-  //   if (auth.token !== null) {
-  //     console.log("have token");
-  //   } else {
-  //     console.log("no token");
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [auth.token]);
 
   return (
     <Box sx={{ height: "fit-content", padding: "32px", width: "100%" }}>
@@ -94,21 +129,25 @@ const CheckIn = () => {
               onClick={() => {
                 if (auth.token !== null) {
                   if (event.isLimited === true) {
-                    console.log("fetch check in with token and info");
+                    // console.log("fetch check in with token and info");
+                    handleCheckInWithTokenAndInfo();
                   } else {
-                    console.log("fetch check in with token and no info");
+                    // console.log("fetch check in with token and no info");
+                    handleCheckInWithTokenAndNoInfo();
                   }
                 } else {
                   if (event.isLimited === true) {
-                    console.log("fetch check in with anonymous and info");
-                    router.push("./input_info/" + event.eventId);
+                    // console.log("fetch check in with anonymous and info");
                   } else {
-                    console.log("fetch check in with anonymous and no info");
+                    // console.log("fetch check in with anonymous and no info");
+                    handleCheckInWithNoTokenAndNoInfo();
                   }
                 }
               }}
             >
-              check in
+              {event.isLimited === true && auth.token === null
+                ? "ไปยังหน้ากรอกข้อมูล"
+                : "เช็คอิน"}
             </Button>
           </Box>
         )}

@@ -1,8 +1,6 @@
 import { Box, Button, CardMedia, TextField } from "@mui/material";
-import { useState, useEffect } from "react";
-import Image from "next/image";
+import { useState, useEffect, ChangeEvent } from "react";
 import { useRouter } from "next/router";
-import { EVENTS, EventType } from "@/data/mock";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -12,14 +10,9 @@ import { eventDetailModel } from "@/model/eventModel/eventModel";
 import { useAuth } from "@/@core/provider/hooks/useAuth";
 import { GET_EVENT_DETAIL_NO_GUARD } from "@/fetcher/endpoint/eventEP/eventEP";
 import { getEventDetailFetcher } from "@/fetcher/api/eventAPI/eventAPI";
-
-interface InfoModel {
-  firstName: string | null;
-  lastName: string | null;
-  phoneNumber: string | null;
-  faculty: string | null;
-  studentId: string | null;
-}
+import { anonymousCheckInInfoType } from "@/model/checkInModel/checkInModel";
+import { CHECK_IN_WITH_NO_TOKEN_AND_INFO } from "@/fetcher/endpoint/checkInEP/checkInEP";
+import { checkInWithNoTokenAndInfoFetcher } from "@/fetcher/api/checkInAPI/checkInAPI";
 
 export default function InputInfo() {
   const router = useRouter();
@@ -27,35 +20,35 @@ export default function InputInfo() {
   const auth = useAuth();
   const [event, setEvent] = useState<eventDetailModel | null>(null);
 
-  const [filterData, setFilterData] = useState<EventType>();
-
-  const [anonymousInfo, setAnonymousInfo] = useState<InfoModel | null>(null);
-
   const [firstName, setFirstName] = useState<string | null>(null);
   const [lastName, setLastName] = useState<string | null>(null);
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
   const [faculty, setFaculty] = useState<string | null>(null);
   const [studentId, setStudentId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const filteredEvent = EVENTS.find((event) => event.id === router.query.id);
-    setFilterData(filteredEvent);
-  }, [router.query.id]);
-
   const handleChange = (event: SelectChangeEvent) => {
     setFaculty(event.target.value as string);
   };
 
-  const handleSubmit = () => {
-    console.log("Submit");
-    const createAnonymousInfo: InfoModel = {
+  const handleSubmit = async () => {
+    // console.log("Submit");
+    const createAnonymousInfo: anonymousCheckInInfoType = {
       firstName: firstName ? firstName : null,
       lastName: lastName ? lastName : null,
       phoneNumber: phoneNumber ? phoneNumber : null,
       faculty: faculty ? faculty : null,
       studentId: studentId ? studentId : null,
     };
-    setAnonymousInfo(createAnonymousInfo);
+    // setAnonymousInfo(createAnonymousInfo);
+    const checkInResponse = await checkInWithNoTokenAndInfoFetcher(
+      CHECK_IN_WITH_NO_TOKEN_AND_INFO,
+      auth.token,
+      event && event?.eventId !== null ? event?.eventId : "",
+      createAnonymousInfo
+    );
+    if (event !== null) {
+      router.push("./comment/" + event.eventId);
+    }
   };
 
   const handleFetchEventDetail = async () => {
@@ -99,8 +92,7 @@ export default function InputInfo() {
       sx={{
         width: "100vw",
         height: "fit-content",
-        paddingX: "30px",
-        paddingY: "20px",
+        padding: "32px",
       }}
     >
       {event && (
@@ -139,6 +131,9 @@ export default function InputInfo() {
               variant="outlined"
               fullWidth
               value={firstName ? firstName : ""}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                setFirstName(event.target.value);
+              }}
             />
 
             <TextField
@@ -147,6 +142,9 @@ export default function InputInfo() {
               variant="outlined"
               fullWidth
               value={lastName ? lastName : ""}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                setLastName(event.target.value);
+              }}
             />
 
             <TextField
@@ -155,6 +153,9 @@ export default function InputInfo() {
               variant="outlined"
               fullWidth
               value={phoneNumber ? phoneNumber : ""}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                setPhoneNumber(event.target.value);
+              }}
             />
 
             <FormControl fullWidth>
@@ -168,7 +169,7 @@ export default function InputInfo() {
               >
                 {FACULTY.map((faculty, index) => {
                   return (
-                    <MenuItem key={index} value={faculty.F_NAME_TH}>
+                    <MenuItem key={index} value={faculty.value}>
                       {faculty.F_NAME_TH}
                     </MenuItem>
                   );
@@ -183,10 +184,13 @@ export default function InputInfo() {
               variant="outlined"
               fullWidth
               value={studentId ? studentId : ""}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                setStudentId(event.target.value);
+              }}
             />
 
-            <Button variant="contained" onClick={handleSubmit}>
-              Submit
+            <Button variant="contained" onClick={handleSubmit} fullWidth>
+              เช็คอิน
             </Button>
           </Box>
         </Box>
