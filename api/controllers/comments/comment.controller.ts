@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import admin from "../../database/config";
 import httpStatus from "http-status";
-import { IGetUserAuthInfoRequest } from "../../models/use";
+import { IGetUserAuthInfoRequest } from "../../models/user";
 
 const db = admin.firestore();
 export const anonymousComment = async (req: Request, res: Response) => {

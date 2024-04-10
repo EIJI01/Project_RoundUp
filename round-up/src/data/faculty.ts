@@ -21,4 +21,5 @@ export const FACULTY = [
   { FID: "20", F_NAME_TH: "วิทยาลัยการปกครองท้องถิ่น", value: "COLA" },
   { FID: "21", F_NAME_TH: "วิทยาลัยนานาชาติ", value: "KKUIC" },
   { FID: "22", F_NAME_TH: "วิทยาเขตหนองคาย", value: "IS" },
+  { FID: "23", F_NAME_TH: "ทั้งหมด", value: "all" },
 ];

@@ -19,11 +19,15 @@ import {
 import React, { useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { EVENTS } from "@/data/mock";
 import { FACULTY } from "@/data/faculty";
 import { CATEGORY } from "@/data/category";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/router";
+import { useAuth } from "@/@core/provider/hooks/useAuth";
+import { GET_LIST_EVENT } from "@/fetcher/endpoint/eventEP/eventEP";
+import { getListEventFetcher } from "@/fetcher/api/eventAPI/eventAPI";
+import { listEventModel } from "@/model/eventModel/eventModel";
+import moment from "moment";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -43,16 +47,27 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 const RoundUpFeed = () => {
   const router = useRouter();
 
+  const auth = useAuth();
+
+  const [defaultListEvent, setDefaultListEvent] = React.useState<
+    listEventModel[] | null
+  >(null);
+
+  const [listEvent, setListEvent] = React.useState<listEventModel[] | null>(
+    null
+  );
+
+  const [listFilterFacultyEvent, setListFilterFacultyEvent] = React.useState<
+    listEventModel[]
+  >([]);
+
+  const [listFilterCategoryEvent, setListFilterCategoryEvent] = React.useState<
+    listEventModel[]
+  >([]);
+
   const [expanded, setExpanded] = React.useState<number | null>(null);
-  const [value, setValue] = React.useState<string>("");
   const [filterFaculty, setFilterFaculty] = React.useState<string[]>([]);
   const [filterCategory, setFilterCategory] = React.useState<string[]>([]);
-  const [filterFacultyValue, setFilterFacultyValue] = React.useState<string[]>(
-    []
-  );
-  const [filterCategoryValue, setFilterCategoryValue] = React.useState<
-    string[]
-  >([]);
 
   const handleChangeFilterFaculty = (
     event: SelectChangeEvent<typeof filterFaculty>
@@ -76,8 +91,149 @@ const RoundUpFeed = () => {
     setExpanded(index);
   };
 
-  useEffect(() => {}, [filterFaculty]);
-  useEffect(() => {}, [filterCategory]);
+  const fetchListEvent = async () => {
+    const eventData = await getListEventFetcher(GET_LIST_EVENT, auth.token);
+
+    if (eventData.length > 0) {
+      const formattedEventData: listEventModel[] = eventData.map(
+        (event: listEventModel) => {
+          return {
+            eventId: event.eventId,
+            ImageName: event.ImageName,
+            ImageURL: event.ImageURL,
+            eventName: event.eventName,
+            eventDetail: event.eventDetail,
+            isLimited: event.isLimited,
+            quantity: event.quantity,
+            numberOfReserve:
+              typeof event.reserveId !== "undefined"
+                ? event.reserveId?.length
+                : 0,
+            faculty: event.faculty,
+            category: event.category,
+            startDate: event.startDate,
+            endDate: event.endDate,
+          };
+        }
+      );
+
+      const filterDateEventData = formattedEventData.filter((event) => {
+        const endDate = event.endDate && new Date(event.endDate);
+        const startDate = event.startDate && new Date(event.startDate);
+        const currentDate = new Date();
+
+        if (endDate && startDate) {
+          return endDate > currentDate && startDate > currentDate;
+        }
+      });
+      // console.log(formattedEventData);
+      setListEvent(filterDateEventData);
+      setDefaultListEvent(filterDateEventData);
+    }
+  };
+
+  useEffect(() => {
+    if (auth.token) {
+      fetchListEvent();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth.token]);
+
+  useEffect(() => {
+    if (filterFaculty.length > 0) {
+      const filterFacultyValue = FACULTY.filter((faculty) => {
+        return filterFaculty.includes(faculty.F_NAME_TH);
+      }).map((faculty) => {
+        return faculty.value;
+      });
+
+      if (defaultListEvent && listEvent && listEvent.length > 0) {
+        const filterListEvent = defaultListEvent.filter((event) => {
+          return event.faculty?.some((faculty) =>
+            filterFacultyValue.includes(faculty)
+          );
+        });
+        // console.log(filterListEvent);
+        setListFilterFacultyEvent(filterListEvent);
+      }
+
+      // console.log(filterFacultyValue);
+    } else {
+      setListFilterFacultyEvent([]);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterFaculty]);
+
+  useEffect(() => {
+    if (filterCategory.length > 0) {
+      const filterCategoryValue = CATEGORY.filter((category) => {
+        return filterCategory.includes(category.C_NAME_TH);
+      }).map((category) => {
+        return category.value;
+      });
+
+      if (defaultListEvent && listEvent && listEvent.length > 0) {
+        const filterListEvent = defaultListEvent.filter((event) => {
+          return event.category?.some((category) =>
+            filterCategoryValue.includes(category)
+          );
+        });
+        // console.log(filterListEvent);
+        setListFilterCategoryEvent(filterListEvent);
+      }
+
+      // console.log(filterCategoryValue);
+    } else {
+      setListFilterCategoryEvent([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterCategory]);
+
+  useEffect(() => {
+    if (defaultListEvent && defaultListEvent?.length > 0) {
+      defaultListEvent?.map((event) => {
+        const currentDate = new Date();
+        const startDate = event.startDate && new Date(event.startDate);
+        // console.log(moment(currentDate).format("HH:mm"));
+        // console.log(startDate);
+        if (
+          startDate &&
+          currentDate.getTime() < startDate.getTime() &&
+          currentDate.getDate() === startDate.getDate() &&
+          currentDate.getMonth() === startDate.getMonth() &&
+          currentDate.getFullYear() === startDate.getFullYear()
+        ) {
+          alert(
+            "วันนี้อีเว้นท์ " +
+              event.eventName +
+              " ที่คุณได้จองไว้จะเริ่มต้นขึ้นเมื่อ " +
+              moment(startDate).format("HH:mm") +
+              " น."
+          );
+        }
+      });
+    }
+  }, [defaultListEvent]);
+
+  useEffect(() => {
+    if (
+      listFilterFacultyEvent.length > 0 ||
+      listFilterCategoryEvent.length > 0
+    ) {
+      const finalFilterEvent = new Set([
+        ...listFilterFacultyEvent,
+        ...listFilterCategoryEvent,
+      ]);
+      // console.log(finalFilterEvent);
+      setListEvent(Array.from(finalFilterEvent));
+    } else {
+      setListEvent(defaultListEvent);
+    }
+
+    // setListEvent(...finalFilterEvent);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listFilterFacultyEvent, listFilterCategoryEvent]);
 
   return (
     <Box sx={{ height: "fit-content", width: "100%", padding: "32px" }}>
@@ -91,11 +247,21 @@ const RoundUpFeed = () => {
         }}
       >
         <Typography
-          sx={{ fontSize: "32px", fontWeight: "bold", width: "100%" }}
+          sx={{
+            fontSize: "8vw",
+            fontWeight: "bold",
+            width: "75%",
+            overflow: "hidden",
+          }}
         >
-          PhakPhoom
+          {auth.user?.firstName} {auth.user?.lastName}
         </Typography>
-        <Box sx={{ display: "flex", gap: "10px", cursor: "pointer" }}>
+        <Box
+          sx={{ display: "flex", gap: "10px", cursor: "pointer" }}
+          onClick={() => {
+            auth.logout();
+          }}
+        >
           <Typography>Logout</Typography>
           <LogoutIcon></LogoutIcon>
         </Box>
@@ -158,7 +324,10 @@ const RoundUpFeed = () => {
         </FormControl>
       </Box>
 
-      {EVENTS.map((data, index) => {
+      {(listEvent && listEvent?.length > 0
+        ? (listEvent as listEventModel[])
+        : []
+      ).map((event, index) => {
         return (
           <Card
             key={index}
@@ -173,9 +342,11 @@ const RoundUpFeed = () => {
           >
             <CardMedia
               component="img"
-              image={data.image}
-              alt="Paella dish"
-              onClick={() => (window.location.href = `feed/${data.id}`)}
+              image={event.ImageURL !== null ? event.ImageURL : ""}
+              alt={event.ImageName !== null ? event.ImageName : ""}
+              onClick={() => {
+                router.push(`event/${event.eventId}`);
+              }}
               sx={{ cursor: "pointer", height: "80%" }}
             />
 
@@ -195,11 +366,17 @@ const RoundUpFeed = () => {
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  {data.title}
+                  {event.eventName}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  0 / 30
-                </Typography>
+                {event.isLimited === true ? (
+                  <Typography variant="body2" color="text.secondary">
+                    {event.numberOfReserve} / {event.quantity}
+                  </Typography>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    Unlimited
+                  </Typography>
+                )}
               </Box>
 
               <Box
@@ -221,7 +398,7 @@ const RoundUpFeed = () => {
                       paddingX: "15px",
                     }}
                   >
-                    {data.detail}
+                    {event.eventDetail}
                   </CardContent>
                 </Collapse>
                 <CardActions

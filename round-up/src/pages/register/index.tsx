@@ -10,11 +10,23 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Theme, useTheme } from "@mui/material/styles";
+import { FACULTY } from "@/data/faculty";
+import { useRouter } from "next/router";
+import { registerFetcher } from "@/fetcher/api/authenticationAPI/authenticationAPI";
+import { REGISTER_ENDPOINT } from "@/fetcher/endpoint/authenticationEP/authenticationEP";
+import { registerValueType } from "@/model/authenticationModel/authenticationModel";
 
 const Register = () => {
-  const [faculty, setFaculty] = React.useState<string[]>([]);
+  const router = useRouter();
+  const [firstName, setFirstName] = useState<string | null>(null);
+  const [lastName, setLastName] = useState<string | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
+  const [faculty, setFaculty] = useState<string | null>(null);
+  const [studentID, setStudentID] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+  const [password, setPassword] = useState<string | null>(null);
 
   const theme = useTheme();
   function getStyles(name: string, personName: string[], theme: Theme) {
@@ -30,11 +42,28 @@ const Register = () => {
     const {
       target: { value },
     } = event;
-    setFaculty(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    setFaculty(value);
   };
+
+  const handleSubmitRegister = async () => {
+    const registerValue: registerValueType = {
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      phoneNumber: phoneNumber,
+      faculty: faculty,
+      studentID: studentID,
+      password: password,
+    };
+    const responseMessage = await registerFetcher(
+      REGISTER_ENDPOINT,
+      registerValue
+    );
+    if (responseMessage) {
+      router.push(".");
+    }
+  };
+
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -71,47 +100,122 @@ const Register = () => {
         gap: "64px",
       }}
     >
-      <Typography sx={{ fontWeight: "bold", fontSize: "32px" }}>Register to get started</Typography>
+      <Typography sx={{ fontWeight: "bold", fontSize: "32px" }}>
+        Register to get started
+      </Typography>
       <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        <TextField label="Enter your KKU ID" variant="outlined" fullWidth />
-        <TextField label="Enter your password" variant="outlined" fullWidth />
-        <TextField label="Enter your password" variant="outlined" fullWidth />
+        <TextField
+          label="First name"
+          variant="outlined"
+          fullWidth
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setFirstName(event.target.value);
+          }}
+        />
+        <TextField
+          label="Last name"
+          variant="outlined"
+          fullWidth
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setLastName(event.target.value);
+          }}
+        />
+        <TextField
+          label="Telephone number"
+          variant="outlined"
+          fullWidth
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setPhoneNumber(event.target.value);
+          }}
+        />
         <FormControl sx={{ width: "100%" }}>
           <InputLabel id="demo-multiple-name-label">Faculty</InputLabel>
           <Select
             labelId="demo-multiple-name-label"
             id="demo-multiple-name"
-            multiple
-            value={faculty}
+            value={faculty !== null ? faculty : "ไม่ระบุ"}
             onChange={handleChange}
             input={<OutlinedInput label="Name" />}
             MenuProps={MenuProps}
           >
-            {names.map((name) => (
-              <MenuItem key={name} value={name} style={getStyles(name, faculty, theme)}>
-                {name}
+            {FACULTY.map((faculty, index) => (
+              <MenuItem
+                key={index}
+                value={faculty.F_NAME_TH}
+                // style={getStyles(name, faculty, theme)}
+              >
+                {faculty.F_NAME_TH}
               </MenuItem>
             ))}
+            <MenuItem value={"ไม่ระบุ"}>ไม่ระบุ</MenuItem>
           </Select>
         </FormControl>
-        <TextField label="Enter your password" variant="outlined" fullWidth />
-        <TextField label="Enter your password" variant="outlined" fullWidth type="password" />
+        <TextField
+          label="Student ID"
+          variant="outlined"
+          fullWidth
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setStudentID(event.target.value);
+          }}
+        />
+        <TextField
+          label="Email"
+          variant="outlined"
+          fullWidth
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setEmail(event.target.value);
+          }}
+        />
+        <TextField
+          label="Password"
+          variant="outlined"
+          fullWidth
+          type="password"
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setPassword(event.target.value);
+          }}
+        />
       </Box>
-      <Button
-        variant="contained"
-        disableElevation
-        fullWidth
-        size="large"
+      <Box
         sx={{
-          color: "white",
-          backgroundColor: "black",
-          borderRadius: "8px",
-          textTransform: "capitalize",
-          paddingY: "16px",
+          width: "100%",
+          display: "flex",
+          gap: "24px",
+          flexDirection: "column",
         }}
       >
-        Register
-      </Button>
+        {" "}
+        <Button
+          variant="contained"
+          disableElevation
+          fullWidth
+          size="large"
+          sx={{
+            color: "white",
+            backgroundColor: "black",
+            borderRadius: "8px",
+            textTransform: "capitalize",
+            paddingY: "16px",
+          }}
+          onClick={handleSubmitRegister}
+        >
+          Register
+        </Button>
+        <Button
+          disableElevation
+          fullWidth
+          sx={{
+            color: "black",
+            backgroundColor: "white",
+            textTransform: "capitalize",
+          }}
+          onClick={() => {
+            router.push(".");
+          }}
+        >
+          Back To Home Page
+        </Button>
+      </Box>
     </Box>
   );
 };
