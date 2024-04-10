@@ -53,15 +53,19 @@ const CheckIn = () => {
   };
 
   const handleCheckInWithNoTokenAndNoInfo = async () => {
-    await checkInWithNoTokenAndNoInfoFetcher(
-      CHECK_IN_WITH_TOKEN_AND_INFO,
+    const checkInResponse = await checkInWithNoTokenAndNoInfoFetcher(
+      CHECK_IN_WITH_NO_TOKEN_AND_NO_INFO,
       auth.token,
       event && event?.eventId !== null ? event?.eventId : "",
       quantity
     );
     if (event !== null) {
-      router.push("./comment/" + event.eventId);
+      router.push({
+        pathname: "./comment/" + event.eventId,
+        query: { anonymousId: checkInResponse.anonymousId },
+      });
     }
+    // console.log(checkInResponse.anonymousId);
   };
 
   const handleCheckInWithTokenAndInfo = async () => {
@@ -76,10 +80,11 @@ const CheckIn = () => {
   };
 
   const handleCheckInWithTokenAndNoInfo = async () => {
-    const checkInResponse = await checkInWithTokenAndNoInfoFetcher(
+    await checkInWithTokenAndNoInfoFetcher(
       CHECK_IN_WITH_TOKEN_AND_NO_INFO,
       auth.token,
-      event && event?.eventId !== null ? event?.eventId : ""
+      event && event?.eventId !== null ? event?.eventId : "",
+      quantity
     );
     if (event !== null) {
       router.push("./comment/" + event.eventId);
@@ -113,8 +118,9 @@ const CheckIn = () => {
               alt={event.ImageName !== null ? event.ImageName : ""}
               sx={{ borderRadius: "10px", boxShadow: "0px 0px 4px grey" }}
             />
-            {event.isLimited === false && auth.token === null && (
+            {event.isLimited === false && (
               <TextField
+                type="number"
                 label="กรุณากรอกจำนวนคนที่เข้ารวม"
                 variant="outlined"
                 fullWidth
@@ -138,6 +144,7 @@ const CheckIn = () => {
                 } else {
                   if (event.isLimited === true) {
                     // console.log("fetch check in with anonymous and info");
+                    router.push("./input_info/" + event.eventId);
                   } else {
                     // console.log("fetch check in with anonymous and no info");
                     handleCheckInWithNoTokenAndNoInfo();

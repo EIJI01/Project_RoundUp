@@ -47,8 +47,12 @@ export default function InputInfo() {
       createAnonymousInfo
     );
     if (event !== null) {
-      router.push("./comment/" + event.eventId);
+      router.push({
+        pathname: "./../comment/" + event.eventId,
+        query: { anonymousId: checkInResponse.anonymousId },
+      });
     }
+    // console.log(checkInResponse.anonymousId);
   };
 
   const handleFetchEventDetail = async () => {

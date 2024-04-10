@@ -31,12 +31,13 @@ export const checkInWithTokenAndInfoFetcher = async (
 export const checkInWithTokenAndNoInfoFetcher = async (
   url: string,
   token: string | null,
-  eventId: string
+  eventId: string,
+  quantity: number
 ) => {
   try {
     const response = await axios.post(
       url,
-      { eventId: eventId },
+      { eventId: eventId, quantity: quantity },
       {
         headers: {
           "Content-Type": "application/json",
