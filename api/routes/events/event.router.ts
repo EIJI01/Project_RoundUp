@@ -4,7 +4,8 @@ import { getAllEvent, getEventById } from "../../controllers/events/event.contro
 
 const router = express.Router();
 
-router.get("/get-all", getAllEvent);
-router.get("/get-id/:id", getEventById)
+router.get("/get-all", authGuard, getAllEvent);
+router.get("/get-id/:id", authGuard, getEventById)
+router.get("/get-id-no-guard/:id", getEventById)
 
 export default router;

@@ -66,15 +66,8 @@ const RoundUpFeed = () => {
   >([]);
 
   const [expanded, setExpanded] = React.useState<number | null>(null);
-  const [value, setValue] = React.useState<string>("");
   const [filterFaculty, setFilterFaculty] = React.useState<string[]>([]);
   const [filterCategory, setFilterCategory] = React.useState<string[]>([]);
-  const [filterFacultyValue, setFilterFacultyValue] = React.useState<string[]>(
-    []
-  );
-  const [filterCategoryValue, setFilterCategoryValue] = React.useState<
-    string[]
-  >([]);
 
   const handleChangeFilterFaculty = (
     event: SelectChangeEvent<typeof filterFaculty>
@@ -105,6 +98,7 @@ const RoundUpFeed = () => {
       const formattedEventData: listEventModel[] = eventData.map(
         (event: listEventModel) => {
           return {
+            eventId: event.eventId,
             ImageName: event.ImageName,
             ImageURL: event.ImageURL,
             eventName: event.eventName,
@@ -139,9 +133,11 @@ const RoundUpFeed = () => {
   };
 
   useEffect(() => {
-    fetchListEvent();
+    if (auth.token) {
+      fetchListEvent();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [auth.token]);
 
   useEffect(() => {
     if (filterFaculty.length > 0) {
@@ -252,7 +248,7 @@ const RoundUpFeed = () => {
       >
         <Typography
           sx={{
-            fontSize: "32px",
+            fontSize: "8vw",
             fontWeight: "bold",
             width: "75%",
             overflow: "hidden",
@@ -331,7 +327,7 @@ const RoundUpFeed = () => {
       {(listEvent && listEvent?.length > 0
         ? (listEvent as listEventModel[])
         : []
-      ).map((data, index) => {
+      ).map((event, index) => {
         return (
           <Card
             key={index}
@@ -346,9 +342,11 @@ const RoundUpFeed = () => {
           >
             <CardMedia
               component="img"
-              image={data.ImageURL !== null ? data.ImageURL : ""}
-              alt="Paella dish"
-              onClick={() => {}}
+              image={event.ImageURL !== null ? event.ImageURL : ""}
+              alt={event.ImageName !== null ? event.ImageName : ""}
+              onClick={() => {
+                router.push(`event/${event.eventId}`);
+              }}
               sx={{ cursor: "pointer", height: "80%" }}
             />
 
@@ -368,11 +366,11 @@ const RoundUpFeed = () => {
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  {data.eventName}
+                  {event.eventName}
                 </Typography>
-                {data.isLimited === true ? (
+                {event.isLimited === true ? (
                   <Typography variant="body2" color="text.secondary">
-                    {data.numberOfReserve} / {data.quantity}
+                    {event.numberOfReserve} / {event.quantity}
                   </Typography>
                 ) : (
                   <Typography variant="body2" color="text.secondary">
@@ -400,7 +398,7 @@ const RoundUpFeed = () => {
                       paddingX: "15px",
                     }}
                   >
-                    {data.eventDetail}
+                    {event.eventDetail}
                   </CardContent>
                 </Collapse>
                 <CardActions

@@ -67,3 +67,53 @@ export const userCheckIn = async (req:IGetUserAuthInfoRequest, res: Response) =>
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
     }
 }
+
+export const anonymousCheckInWithUnlimitedQuantity = async (req:Request, res: Response) => {
+    try {
+        const { eventId, quantity } = req.body;
+        let anonymousCheckInId;
+
+        for (let i = 0; i < quantity; i++) {
+            const firstName = "";
+            const lastName = "";
+            const faculty = "";
+            const phoneNumber = "";
+            const studentId = "";
+
+            const docRef = db.collection("anonymous").doc();
+            await docRef.set({ 
+                firstName, lastName, faculty, 
+                phoneNumber, studentId });
+            const docId = docRef.id;
+
+            if(i === 0){
+                anonymousCheckInId = docId
+            }
+
+            if (!docId) {
+                res.status(httpStatus.NOT_FOUND)
+                   .json({ error: "Anonymous not found" });
+                return; // Return to stop further execution
+            }
+
+            const checkInRef = db.collection("checkIn").doc();
+            await checkInRef.set({
+                anonymousId: docId, 
+                checkInAt: toThaiDateString(new Date())})
+            const checkInId = checkInRef.id;
+
+            const eventDocRef = db.collection("event").doc(eventId);
+            await eventDocRef.update({
+                 checkInId: admin.firestore.FieldValue.arrayUnion(checkInId) });
+                
+        }
+
+        res.status(httpStatus.OK).json({ anonymousId: anonymousCheckInId });
+
+    }catch(error:any)
+    {
+        console.error("Failed to check in multi anonymous:", error);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR)
+           .json({ error: "Internal server error" });
+    }
+}

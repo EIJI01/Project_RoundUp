@@ -32,6 +32,7 @@ const AuthProvider = ({ children }: AuthContextProps) => {
     if (localToken) {
       localStorage.setItem("token", localToken);
       handleFetchUserInformation(localToken);
+      setToken(localToken);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localToken]);

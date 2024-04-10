@@ -7,8 +7,6 @@ const db = admin.firestore();
 
 export const getUserInformation = async (req: IGetUserAuthInfoRequest, res: Response) => {
     const userId = req.user;
-    console.log(userId);
-    
     try{
         const userDb = db.collection("user").doc(userId);
         const userData = await userDb.get();
