@@ -5,14 +5,8 @@ import { useState, useEffect } from "react";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { eventDetailModel } from "@/model/eventModel/eventModel";
-import {
-  GET_EVENT_DETAIL,
-  EVENT_RESERVATION,
-} from "@/fetcher/endpoint/eventEP/eventEP";
-import {
-  getEventDetailFetcher,
-  eventReservationFetcher,
-} from "@/fetcher/api/eventAPI/eventAPI";
+import { GET_EVENT_DETAIL, EVENT_RESERVATION } from "@/fetcher/endpoint/eventEP/eventEP";
+import { getEventDetailFetcher, eventReservationFetcher } from "@/fetcher/api/eventAPI/eventAPI";
 import { useAuth } from "@/@core/provider/hooks/useAuth";
 import moment from "moment";
 
@@ -31,10 +25,7 @@ export default function EventId() {
   };
 
   const handleFetchEventDetail = async () => {
-    const eventDetailData = await getEventDetailFetcher(
-      GET_EVENT_DETAIL + `/${eventId}`,
-      auth.token
-    );
+    const eventDetailData = await getEventDetailFetcher(GET_EVENT_DETAIL + `/${eventId}`, auth.token);
     // console.log(eventDetailData);
 
     const formattedEventDetail: eventDetailModel = {
@@ -48,27 +39,20 @@ export default function EventId() {
       quantity: eventDetailData.quantity,
       reserveId: eventDetailData.reserveId,
       numberOfReserve:
-        typeof eventDetailData.reserveId !== "undefined" &&
-        eventDetailData.reserveId.length > 0
-          ? eventDetailData.reserveId.length
-          : 0,
+        typeof eventDetailData.reserveId !== "undefined" && eventDetailData.reserveId.length > 0 ? eventDetailData.reserveId.length : 0,
       startDate: eventDetailData.startDate,
       endDate: eventDetailData.endDate,
     };
     setEvent(formattedEventDetail);
     setIsReserved(eventDetailData.isReserved);
-    setIsAvailable(
-      eventDetailData.reserveId.length < parseInt(eventDetailData.quantity)
-    );
+    if (formattedEventDetail.reserveId) {
+      setIsAvailable(eventDetailData.reserveId.length < parseInt(eventDetailData.quantity));
+    }
     // console.log(formattedEventDetail);
   };
 
   const handleReserve = async () => {
-    await eventReservationFetcher(
-      EVENT_RESERVATION,
-      auth.token,
-      event && event?.eventId !== null ? event?.eventId : ""
-    );
+    await eventReservationFetcher(EVENT_RESERVATION, auth.token, event && event?.eventId !== null ? event?.eventId : "");
   };
 
   useEffect(() => {
@@ -96,14 +80,8 @@ export default function EventId() {
               alt={event.ImageName !== null ? event.ImageName : ""}
               sx={{ borderRadius: "10px", boxShadow: "0px 0px 4px grey" }}
             />
-            <Typography
-              sx={{ fontSize: "32px", fontWeight: "bold", marginTop: "16px" }}
-            >
-              {event.eventName}
-            </Typography>
-            <Typography sx={{ fontSize: "16px", marginTop: "8px" }}>
-              {event.eventDetail}
-            </Typography>
+            <Typography sx={{ fontSize: "32px", fontWeight: "bold", marginTop: "16px" }}>{event.eventName}</Typography>
+            <Typography sx={{ fontSize: "16px", marginTop: "8px" }}>{event.eventDetail}</Typography>
           </Box>
 
           <Box
@@ -117,8 +95,7 @@ export default function EventId() {
             <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <AccessTimeIcon sx={{ fontSize: "32px" }}></AccessTimeIcon>
               <Box sx={{ display: "flex", gap: "5px", alignItems: "center" }}>
-                {formattedTimeEvent(event?.startDate)} -{" "}
-                {formattedTimeEvent(event?.endDate)}
+                {formattedTimeEvent(event?.startDate)} - {formattedTimeEvent(event?.endDate)}
               </Box>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -156,13 +133,7 @@ export default function EventId() {
               setIsReserved(true);
             }}
           >
-            {isAvailable === true
-              ? isReserved === true
-                ? "จองที่แล้ว"
-                : "จองที่"
-              : isReserved === true
-              ? "จองที่แล้ว"
-              : "จำนวนที่เต็มแล้ว"}
+            {isAvailable === true ? (isReserved === true ? "จองที่แล้ว" : "จองที่") : isReserved === true ? "จองที่แล้ว" : "จำนวนที่เต็มแล้ว"}
           </Button>
         )}
 
