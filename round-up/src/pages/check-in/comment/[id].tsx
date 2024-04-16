@@ -7,7 +7,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { GET_EVENT_DETAIL_NO_GUARD } from "@/fetcher/endpoint/eventEP/eventEP";
 import { USER_COMMENT, ANONYMOUS_COMMENT } from "@/fetcher/endpoint/commentEP/commentEP";
 import { userCommentFetcher, anonymousCommentFetcher } from "@/fetcher/api/commentAPI/commentAPI";
-import Link from "next/link";
+import LogoURL from "../../../public/assets/RemindU_LOGO.png";
 
 const Comment = () => {
   const router = useRouter();
@@ -36,6 +36,7 @@ const Comment = () => {
 
   const handleFetchEventDetail = async () => {
     const eventDetailData = await getEventDetailFetcher(GET_EVENT_DETAIL_NO_GUARD + `/${eventId}`, auth.token);
+    // console.log(eventDetailData);
 
     const formattedEventDetail: eventDetailModel = {
       eventId: eventDetailData.eventId,

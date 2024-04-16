@@ -15,6 +15,7 @@ import {
   checkInWithTokenAndNoInfoFetcher,
   checkInWithNoTokenAndNoInfoFetcher,
 } from "@/fetcher/api/checkInAPI/checkInAPI";
+import LogoURL from "../../../public/assets/RemindU_LOGO.png";
 
 const CheckIn = () => {
   const router = useRouter();
@@ -100,6 +101,49 @@ const CheckIn = () => {
 
   return (
     <Box sx={{ height: "fit-content", padding: "32px", width: "100%" }}>
+      <Box
+        sx={{
+          width: "100%",
+          height: "fit-content",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "4px",
+          marginBottom: "30px",
+        }}
+      >
+        <Box
+          sx={{
+            position: "relative",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <Box
+            sx={{
+              backgroundImage: `url(${LogoURL.src})`,
+              width: "80px",
+              height: "50px",
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+              marginRight: "100px",
+            }}
+          ></Box>
+          <Typography
+            sx={{
+              fontSize: "32px",
+              fontWeight: "500",
+              position: "absolute",
+              right: 135,
+            }}
+          >
+            emind U
+          </Typography>
+        </Box>
+      </Box>
+
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         {event && (
           <Box
