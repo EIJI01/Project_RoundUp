@@ -93,6 +93,7 @@ const RoundUpFeed = () => {
 
   const fetchListEvent = async () => {
     const eventData = await getListEventFetcher(GET_LIST_EVENT, auth.token);
+    console.log(eventData);
 
     if (eventData.length > 0) {
       const formattedEventData: listEventModel[] = eventData.map(
@@ -123,7 +124,7 @@ const RoundUpFeed = () => {
         const currentDate = new Date();
 
         if (endDate && startDate) {
-          return endDate > currentDate && startDate > currentDate;
+          return endDate > currentDate;
         }
       });
       // console.log(formattedEventData);
@@ -234,6 +235,10 @@ const RoundUpFeed = () => {
     // setListEvent(...finalFilterEvent);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listFilterFacultyEvent, listFilterCategoryEvent]);
+
+  useEffect(() => {
+    console.log(listEvent);
+  }, [listEvent]);
 
   return (
     <Box sx={{ height: "fit-content", width: "100%", padding: "32px" }}>
