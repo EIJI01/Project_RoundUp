@@ -8,6 +8,7 @@ import { GET_EVENT_DETAIL_NO_GUARD } from "@/fetcher/endpoint/eventEP/eventEP";
 import { USER_COMMENT, ANONYMOUS_COMMENT } from "@/fetcher/endpoint/commentEP/commentEP";
 import { userCommentFetcher, anonymousCommentFetcher } from "@/fetcher/api/commentAPI/commentAPI";
 import LogoURL from "../../../public/assets/RemindU_LOGO.png";
+import Link from "next/link";
 
 const Comment = () => {
   const router = useRouter();
