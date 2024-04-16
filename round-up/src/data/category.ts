@@ -15,5 +15,12 @@ export const CATEGORY = [
   { CID: "14", C_NAME_TH: "สวนและต้นไม้", value: "garden" },
   { CID: "15", C_NAME_TH: "หนังสือ", value: "book" },
   { CID: "16", C_NAME_TH: "อาหาร", value: "food" },
-  { CID: "17", C_NAME_TH: "ทั้งหมด", value: "all" },
+  { CID: "17", C_NAME_TH: "ข่าวสาร", value: "news" },
+  { CID: "18", C_NAME_TH: "ฮาโลวีน", value: "halloween" },
+  { CID: "19", C_NAME_TH: "วาเลนไทน์", value: "valentine" },
+  { CID: "20", C_NAME_TH: "คริสต์มาส", value: "christmas" },
+  { CID: "21", C_NAME_TH: "ออกกำลังกาย", value: "exercise" },
+  { CID: "22", C_NAME_TH: "การอบรม", value: "training" },
+  { CID: "23", C_NAME_TH: "มูเตลู/ความเชื่อ", value: "faith" },
+  { CID: "24", C_NAME_TH: "ทั้งหมด", value: "all" },
 ];
