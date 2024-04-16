@@ -44,19 +44,26 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.loginUser = loginUser;
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, email, password } = req.body;
+        const { email, firstName, lastName, phoneNumber, faculty, studentID, password } = req.body;
         yield config_1.default.auth()
             .createUser({
             email: email,
             password: password,
-            displayName: name,
+            displayName: firstName + " " + lastName
         })
             .then((userCredential) => {
             console.log(userCredential);
             config_1.default.firestore()
                 .collection("user")
                 .doc(userCredential.uid)
-                .set({ email: email, firstName: name });
+                .set({
+                email: email,
+                firstName: firstName,
+                lastName: lastName,
+                phoneNumber: phoneNumber,
+                faculty: faculty,
+                studentID: studentID,
+            });
             res.status(http_status_1.default.OK)
                 .json({ msg: "Create user success" });
         })

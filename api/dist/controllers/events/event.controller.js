@@ -12,14 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getEventById = exports.getAllEvent = void 0;
+exports.getEventByIdWithNoAuthGuard = exports.getEventById = exports.getAllEvent = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const config_1 = __importDefault(require("../../database/config"));
 const db = config_1.default.firestore();
 const getAllEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const eventDb = yield db.collection("event").get();
-        const eventData = eventDb.docs.map((doc) => doc.data());
+        const eventData = eventDb.docs.map((doc) => (Object.assign({ eventId: doc.id }, doc.data())));
         res.status(http_status_1.default.OK).json(eventData);
     }
     catch (error) {
@@ -30,6 +30,7 @@ const getAllEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getAllEvent = getAllEvent;
 const getEventById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.user;
     const requestId = req.params.id;
     try {
         const eventRef = db.collection("event").doc(requestId);
@@ -39,7 +40,12 @@ const getEventById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 .json({ error: "Event not found" });
         }
         const eventData = eventDoc.data();
-        res.status(http_status_1.default.OK).json(eventData);
+        const eventId = eventDoc.id;
+        const reserveRef = db.collection("reserve");
+        const reserveDoc = yield reserveRef.get();
+        const reserveData = reserveDoc.docs.map((doc) => (doc.data()));
+        const isReserved = reserveData.some((reserved) => { return reserved.userId === userId; });
+        res.status(http_status_1.default.OK).json(Object.assign({ eventId: eventId, isReserved: isReserved }, eventData));
     }
     catch (error) {
         console.error("Error fetching event:", error);
@@ -48,3 +54,23 @@ const getEventById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getEventById = getEventById;
+const getEventByIdWithNoAuthGuard = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const requestId = req.params.id;
+    try {
+        const eventRef = db.collection("event").doc(requestId);
+        const eventDoc = yield eventRef.get();
+        if (!eventDoc.exists) {
+            return res.status(http_status_1.default.NOT_FOUND)
+                .json({ error: "Event not found" });
+        }
+        const eventData = eventDoc.data();
+        const eventId = eventDoc.id;
+        res.status(http_status_1.default.OK).json(Object.assign({ eventId: eventId }, eventData));
+    }
+    catch (error) {
+        console.error("Error fetching event:", error);
+        res.status(http_status_1.default.INTERNAL_SERVER_ERROR)
+            .json({ error: "Internal server error" });
+    }
+});
+exports.getEventByIdWithNoAuthGuard = getEventByIdWithNoAuthGuard;

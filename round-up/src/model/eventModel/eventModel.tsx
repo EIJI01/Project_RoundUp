@@ -12,6 +12,7 @@ export interface listEventModel {
   numberOfReserve?: number | null;
   startDate: string | null;
   endDate: string | null;
+  isReserved: boolean;
 }
 
 export interface eventDetailModel {

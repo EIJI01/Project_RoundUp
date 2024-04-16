@@ -15,9 +15,7 @@ export default function ThankYou() {
       }}
     >
       <CheckIcon sx={{ fontSize: "96px" }}></CheckIcon>
-      <Typography sx={{ fontSize: "32px", fontWeight: "500" }}>
-        THANK YOU
-      </Typography>
+      <Typography sx={{ fontSize: "32px", fontWeight: "500" }}>THANK YOU</Typography>
     </Box>
   );
 }
