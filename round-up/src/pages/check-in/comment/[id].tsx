@@ -5,8 +5,15 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { GET_EVENT_DETAIL_NO_GUARD } from "@/fetcher/endpoint/eventEP/eventEP";
-import { USER_COMMENT, ANONYMOUS_COMMENT } from "@/fetcher/endpoint/commentEP/commentEP";
-import { userCommentFetcher, anonymousCommentFetcher } from "@/fetcher/api/commentAPI/commentAPI";
+import {
+  USER_COMMENT,
+  ANONYMOUS_COMMENT,
+} from "@/fetcher/endpoint/commentEP/commentEP";
+import {
+  userCommentFetcher,
+  anonymousCommentFetcher,
+} from "@/fetcher/api/commentAPI/commentAPI";
+import LogoURL from "../../../public/assets/RemindU_LOGO.png";
 
 const Comment = () => {
   const router = useRouter();
@@ -24,7 +31,13 @@ const Comment = () => {
   const handleSubmitComment = async () => {
     router.replace("/thank_you");
     if (anonymousId === undefined && auth.token !== null) {
-      await userCommentFetcher(USER_COMMENT, auth.token, event && event?.eventId !== null ? event?.eventId : "", commentDetail, commentRatting);
+      await userCommentFetcher(
+        USER_COMMENT,
+        auth.token,
+        event && event?.eventId !== null ? event?.eventId : "",
+        commentDetail,
+        commentRatting
+      );
     }
     if (typeof anonymousId === "string" && auth.token === null) {
       await anonymousCommentFetcher(
@@ -39,7 +52,10 @@ const Comment = () => {
   };
 
   const handleFetchEventDetail = async () => {
-    const eventDetailData = await getEventDetailFetcher(GET_EVENT_DETAIL_NO_GUARD + `/${eventId}`, auth.token);
+    const eventDetailData = await getEventDetailFetcher(
+      GET_EVENT_DETAIL_NO_GUARD + `/${eventId}`,
+      auth.token
+    );
     // console.log(eventDetailData);
 
     const formattedEventDetail: eventDetailModel = {
@@ -53,7 +69,10 @@ const Comment = () => {
       quantity: eventDetailData.quantity,
       reserveId: eventDetailData.reserveId,
       numberOfReserve:
-        typeof eventDetailData.reserveId !== "undefined" && eventDetailData.reserveId.length > 0 ? eventDetailData.reserveId.length : 0,
+        typeof eventDetailData.reserveId !== "undefined" &&
+        eventDetailData.reserveId.length > 0
+          ? eventDetailData.reserveId.length
+          : 0,
       startDate: eventDetailData.startDate,
       endDate: eventDetailData.endDate,
     };
@@ -74,7 +93,8 @@ const Comment = () => {
         ขอขอบคุณที่มาเข้าร่วมกิจกรรมของเรา
       </Typography>
       <Typography sx={{ marginTop: 3, color: "gray", marginBottom: 3 }}>
-        ท่านสามารถคอมเมนต์ติชม เพื่อให้กำลังใจทีมงานผู้จัดทำ หรือแจ้งสิ่งแปลกๆที่พบเจอในงานได้
+        ท่านสามารถคอมเมนต์ติชม เพื่อให้กำลังใจทีมงานผู้จัดทำ
+        หรือแจ้งสิ่งแปลกๆที่พบเจอในงานได้
       </Typography>
       <form>
         <TextField
@@ -88,7 +108,9 @@ const Comment = () => {
           }}
         />
         <Box sx={{ display: "flex", marginTop: 2, gap: 1 }}>
-          <Typography sx={{ color: "gray", fontSize: "14px" }}>ให้คะแนนความพึงพอใจของคุณ</Typography>
+          <Typography sx={{ color: "gray", fontSize: "14px" }}>
+            ให้คะแนนความพึงพอใจของคุณ
+          </Typography>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Box
               sx={{

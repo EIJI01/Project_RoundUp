@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardActions,
   CardContent,
@@ -28,6 +29,7 @@ import { GET_LIST_EVENT } from "@/fetcher/endpoint/eventEP/eventEP";
 import { getListEventFetcher } from "@/fetcher/api/eventAPI/eventAPI";
 import { listEventModel } from "@/model/eventModel/eventModel";
 import moment from "moment";
+import LogoURL from "../../../public/assets/RemindU_LOGO.png";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -69,6 +71,17 @@ const RoundUpFeed = () => {
   const [filterFaculty, setFilterFaculty] = React.useState<string[]>([]);
   const [filterCategory, setFilterCategory] = React.useState<string[]>([]);
 
+  const [checkedFilterIsReserved, setCheckedFilterIsReserved] =
+    React.useState<boolean>(false);
+
+  const handleChangeFilterIsReserved = () => {
+    if (checkedFilterIsReserved === true) {
+      setCheckedFilterIsReserved(false);
+    } else {
+      setCheckedFilterIsReserved(true);
+    }
+  };
+
   const handleChangeFilterFaculty = (
     event: SelectChangeEvent<typeof filterFaculty>
   ) => {
@@ -93,8 +106,6 @@ const RoundUpFeed = () => {
 
   const fetchListEvent = async () => {
     const eventData = await getListEventFetcher(GET_LIST_EVENT, auth.token);
-    console.log(eventData);
-
     if (eventData.length > 0) {
       const formattedEventData: listEventModel[] = eventData.map(
         (event: listEventModel) => {
@@ -114,6 +125,7 @@ const RoundUpFeed = () => {
             category: event.category,
             startDate: event.startDate,
             endDate: event.endDate,
+            isReserved: event.isReserved,
           };
         }
       );
@@ -226,15 +238,36 @@ const RoundUpFeed = () => {
         ...listFilterFacultyEvent,
         ...listFilterCategoryEvent,
       ]);
-      // console.log(finalFilterEvent);
-      setListEvent(Array.from(finalFilterEvent));
+
+      if (Array.from(finalFilterEvent) && checkedFilterIsReserved === true) {
+        const filterCheckIsReserved = Array.from(finalFilterEvent)?.filter(
+          (event) => {
+            return event.isReserved === true;
+          }
+        );
+        setListEvent(filterCheckIsReserved);
+      } else {
+        setListEvent(Array.from(finalFilterEvent));
+      }
     } else {
-      setListEvent(defaultListEvent);
+      if (defaultListEvent && checkedFilterIsReserved === true) {
+        const filterCheckIsReserved = defaultListEvent?.filter((event) => {
+          return event.isReserved === true;
+        });
+        setListEvent(filterCheckIsReserved);
+      } else {
+        setListEvent(defaultListEvent);
+      }
     }
 
     // setListEvent(...finalFilterEvent);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listFilterFacultyEvent, listFilterCategoryEvent]);
+  }, [
+    listFilterFacultyEvent,
+    listFilterCategoryEvent,
+    defaultListEvent,
+    checkedFilterIsReserved,
+  ]);
 
   useEffect(() => {
     console.log(listEvent);
@@ -242,6 +275,49 @@ const RoundUpFeed = () => {
 
   return (
     <Box sx={{ height: "fit-content", width: "100%", padding: "32px" }}>
+      <Box
+        sx={{
+          width: "100%",
+          height: "fit-content",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "4px",
+          marginBottom: "30px",
+        }}
+      >
+        <Box
+          sx={{
+            position: "relative",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <Box
+            sx={{
+              backgroundImage: `url(${LogoURL.src})`,
+              width: "80px",
+              height: "50px",
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+              marginRight: "100px",
+            }}
+          ></Box>
+          <Typography
+            sx={{
+              fontSize: "32px",
+              fontWeight: "500",
+              position: "absolute",
+              right: 135,
+            }}
+          >
+            emind U
+          </Typography>
+        </Box>
+      </Box>
+
       <Box
         sx={{
           display: "flex",
@@ -253,8 +329,8 @@ const RoundUpFeed = () => {
       >
         <Typography
           sx={{
-            fontSize: "8vw",
-            fontWeight: "bold",
+            fontSize: "6.5vw",
+            fontWeight: "400",
             width: "75%",
             overflow: "hidden",
           }}
@@ -329,6 +405,17 @@ const RoundUpFeed = () => {
         </FormControl>
       </Box>
 
+      <Box sx={{ marginBottom: "20px", width: "100%", height: "100%" }}>
+        <Button
+          fullWidth
+          variant={checkedFilterIsReserved === true ? "outlined" : "contained"}
+          size="large"
+          onClick={handleChangeFilterIsReserved}
+        >
+          แสดงอีเวนท์ที่ได้ทำการจองแล้ว
+        </Button>
+      </Box>
+
       {(listEvent && listEvent?.length > 0
         ? (listEvent as listEventModel[])
         : []
@@ -366,11 +453,16 @@ const RoundUpFeed = () => {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "flex-end",
-                  height: "40px",
+                  height: "fit-content",
                   paddingX: "15px",
+                  marginTop: "15px",
                 }}
               >
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ maxWidth: "90%" }}
+                >
                   {event.eventName}
                 </Typography>
                 {event.isLimited === true ? (
