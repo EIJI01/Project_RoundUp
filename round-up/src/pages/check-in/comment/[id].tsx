@@ -7,6 +7,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { GET_EVENT_DETAIL_NO_GUARD } from "@/fetcher/endpoint/eventEP/eventEP";
 import { USER_COMMENT, ANONYMOUS_COMMENT } from "@/fetcher/endpoint/commentEP/commentEP";
 import { userCommentFetcher, anonymousCommentFetcher } from "@/fetcher/api/commentAPI/commentAPI";
+import Link from "next/link";
 
 const Comment = () => {
   const router = useRouter();
@@ -17,12 +18,7 @@ const Comment = () => {
   const [commentDetail, setCommentDetail] = useState<string>("");
   const [commentRatting, setCommentRatting] = useState<number>(5);
 
-  // useEffect(() => {
-  //   console.log(typeof anonymousId);
-  // }, [anonymousId]);
-
   const handleSubmitComment = async () => {
-    router.replace("/thank_you");
     if (anonymousId === undefined && auth.token !== null) {
       await userCommentFetcher(USER_COMMENT, auth.token, event && event?.eventId !== null ? event?.eventId : "", commentDetail, commentRatting);
     }
@@ -40,7 +36,6 @@ const Comment = () => {
 
   const handleFetchEventDetail = async () => {
     const eventDetailData = await getEventDetailFetcher(GET_EVENT_DETAIL_NO_GUARD + `/${eventId}`, auth.token);
-    // console.log(eventDetailData);
 
     const formattedEventDetail: eventDetailModel = {
       eventId: eventDetailData.eventId,
@@ -58,14 +53,12 @@ const Comment = () => {
       endDate: eventDetailData.endDate,
     };
     setEvent(formattedEventDetail);
-    // console.log(formattedEventDetail);
   };
 
   useEffect(() => {
     if (eventId) {
       handleFetchEventDetail();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventId]);
 
   return (
@@ -207,20 +200,22 @@ const Comment = () => {
             </Box>
           </Box>
         </Box>
-        <Button
-          variant="contained"
-          type="submit"
-          sx={{
-            marginTop: 2,
-            backgroundColor: "black",
-            textTransform: "capitalize",
-          }}
-          size="medium"
-          fullWidth
-          onClick={handleSubmitComment}
-        >
-          ส่ง
-        </Button>
+        <Link href="/check-in/comment/thank-you">
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{
+              marginTop: 2,
+              backgroundColor: "black",
+              textTransform: "capitalize",
+            }}
+            size="medium"
+            fullWidth
+            onClick={handleSubmitComment}
+          >
+            ส่ง
+          </Button>
+        </Link>
       </form>
     </Box>
   );

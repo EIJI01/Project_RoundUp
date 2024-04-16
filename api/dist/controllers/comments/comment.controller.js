@@ -25,8 +25,13 @@ const anonymousComment = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 .json({ error: "Anonymous not found" });
         }
         const commentCollection = db.collection("comment").doc();
-        yield commentCollection.set({ anonymousId, commentDetail, eventId, ratting })
-            .then(() => res.status(http_status_1.default.OK).json("Comment success"));
+        yield commentCollection.set({ anonymousId, commentDetail, eventId, ratting });
+        const commentId = commentCollection.id;
+        const eventDocRef = db.collection("event").doc(eventId);
+        yield eventDocRef.update({
+            commentId: config_1.default.firestore.FieldValue.arrayUnion(commentId)
+        });
+        res.status(http_status_1.default.OK).json({ message: "Comment success" });
     }
     catch (error) {
         console.error("Failed to comment anonymous:", error);
@@ -46,8 +51,13 @@ const userComment = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 .json({ error: "User not found" });
         }
         const commentCollection = db.collection("comment").doc();
-        yield commentCollection.set({ userId: userId, commentDetail, eventId, ratting })
-            .then(() => res.status(http_status_1.default.OK).json("Comment success"));
+        yield commentCollection.set({ userId: userId, commentDetail, eventId, ratting });
+        const commentId = commentCollection.id;
+        const eventDocRef = db.collection("event").doc(eventId);
+        yield eventDocRef.update({
+            commentId: config_1.default.firestore.FieldValue.arrayUnion(commentId)
+        });
+        res.status(http_status_1.default.OK).json({ message: "Comment success" });
     }
     catch (error) {
         console.error("Failed to comment anonymous:", error);
