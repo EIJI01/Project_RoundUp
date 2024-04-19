@@ -1,21 +1,23 @@
-version: "3.7"
+version: "3"
 services:
   api:
     container_name: api
     build:
-      context: ./api/
+      context: ./api
       dockerfile: Dockerfile
     environment:
       - PORT=8080
       - GOOGLE_APPLICATION_CREDENTIALS=.firebase/service-account.json
       - API_KEY=AIzaSyBLXZ53TI5-g2Cy7JWi_WowSdqQ7ZAvin4
+      - DATABASE_URL=https://kkuremindyou-default-rtdb.asia-southeast1.firebasedatabase.app
+      - LOGIN_URL=https://identitytoolkit.googleapis.com/v1/accounts
     ports:
       - 8080:8080
 
   web:
     container_name: round-up
     build:
-      context: ./round-up/
+      context: ./round-up
       dockerfile: Dockerfile
     ports:
       - 3000:3000
