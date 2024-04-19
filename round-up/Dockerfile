@@ -1,14 +1,12 @@
-FROM node:boron
+FROM node:18
 
-RUN mkdir -p /usr/src/app
+WORKDIR /app
 
-WORKDIR /usr/src/app
-
-COPY package.json /usr/src/app/
+COPY package.json ./
 
 RUN yarn install
 
-COPY . /usr/src/app
+COPY . .
 
 EXPOSE 3000
 

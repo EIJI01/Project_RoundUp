@@ -1,15 +1,13 @@
-FROM node:boron
-
-RUN mkdir -p /usr/src/app
+FROM node:18
 
 WORKDIR /usr/src/app
 
-COPY package.json /usr/src/app/
+COPY package*.json ./
 
 RUN npm install
 
-COPY . /usr/src/app
+COPY . .
 
-EXPOSE 443
+EXPOSE 8080
 
 CMD ["npm","start"]

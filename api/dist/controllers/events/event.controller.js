@@ -17,10 +17,25 @@ const http_status_1 = __importDefault(require("http-status"));
 const config_1 = __importDefault(require("../../database/config"));
 const db = config_1.default.firestore();
 const getAllEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.user;
     try {
         const eventDb = yield db.collection("event").get();
         const eventData = eventDb.docs.map((doc) => (Object.assign({ eventId: doc.id }, doc.data())));
-        res.status(http_status_1.default.OK).json(eventData);
+        const reserveRef = db.collection("reserve");
+        const listEvent = yield Promise.all(eventData.map((event) => __awaiter(void 0, void 0, void 0, function* () {
+            if (!event.reserveId || !Array.isArray(event.reserveId)) {
+                return Object.assign({ isReserved: false }, event);
+            }
+            const reservePromises = event.reserveId.map((reserveId) => __awaiter(void 0, void 0, void 0, function* () {
+                var _a;
+                const reserveDoc = yield reserveRef.doc(reserveId).get();
+                return ((_a = reserveDoc.data()) === null || _a === void 0 ? void 0 : _a.userId) === userId;
+            }));
+            const isReservedArray = yield Promise.all(reservePromises);
+            const isReserved = isReservedArray.some((value) => value);
+            return Object.assign({ isReserved: isReserved }, event);
+        })));
+        res.status(http_status_1.default.OK).json(listEvent);
     }
     catch (error) {
         console.error("Error fetching event:", error);
@@ -42,9 +57,16 @@ const getEventById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const eventData = eventDoc.data();
         const eventId = eventDoc.id;
         const reserveRef = db.collection("reserve");
-        const reserveDoc = yield reserveRef.get();
-        const reserveData = reserveDoc.docs.map((doc) => (doc.data()));
-        const isReserved = reserveData.some((reserved) => { return reserved.userId === userId; });
+        if (!eventData.reserveId || !Array.isArray(eventData.reserveId)) {
+            return res.status(http_status_1.default.OK).json(Object.assign({ eventId: eventId, isReserved: false }, eventData));
+        }
+        const reservePromises = eventData.reserveId.map((reserveId) => __awaiter(void 0, void 0, void 0, function* () {
+            var _b;
+            const reserveDoc = yield reserveRef.doc(reserveId).get();
+            return ((_b = reserveDoc.data()) === null || _b === void 0 ? void 0 : _b.userId) === userId;
+        }));
+        const isReservedArray = yield Promise.all(reservePromises);
+        const isReserved = isReservedArray.some((value) => value);
         res.status(http_status_1.default.OK).json(Object.assign({ eventId: eventId, isReserved: isReserved }, eventData));
     }
     catch (error) {
